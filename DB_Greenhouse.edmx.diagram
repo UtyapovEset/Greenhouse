@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="01e0a9c3e382405a93410c6abcb75ee4" Name="Diagram1">
+        <EntityTypeShape EntityType="Greenhouse_AtenaModel.ClimateData" Width="1.5" PointX="3" PointY="4.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Greenhouse_AtenaModel.Crops" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Greenhouse_AtenaModel.Greenhouses" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
+        <EntityTypeShape EntityType="Greenhouse_AtenaModel.PlantingZones" Width="1.5" PointX="6" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Greenhouse_AtenaModel.PracticeTemplates" Width="1.5" PointX="6" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Greenhouse_AtenaModel.Type_Crops" Width="1.5" PointX="1.5" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Greenhouse_AtenaModel.WorkPlans" Width="1.5" PointX="3" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Greenhouse_AtenaModel.WorkTasks" Width="1.5" PointX="8.25" PointY="8.125" IsExpanded="true" />
+        <AssociationConnector Association="Greenhouse_AtenaModel.FK__ClimateDa__Green__5812160E" ManuallyRouted="false" />
+        <AssociationConnector Association="Greenhouse_AtenaModel.FK__Crops__Sort__4BAC3F29" ManuallyRouted="false" />
+        <AssociationConnector Association="Greenhouse_AtenaModel.FK__PlantingZ__CropI__5165187F" ManuallyRouted="false" />
+        <AssociationConnector Association="Greenhouse_AtenaModel.FK__PracticeT__CropI__5441852A" ManuallyRouted="false" />
+        <AssociationConnector Association="Greenhouse_AtenaModel.FK__PlantingZ__Green__5070F446" ManuallyRouted="false" />
+        <AssociationConnector Association="Greenhouse_AtenaModel.FK__WorkPlans__Green__5AEE82B9" ManuallyRouted="false" />
+        <AssociationConnector Association="Greenhouse_AtenaModel.FK__WorkTasks__Plant__5EBF139D" ManuallyRouted="false" />
+        <AssociationConnector Association="Greenhouse_AtenaModel.FK__WorkTasks__WorkP__5DCAEF64" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

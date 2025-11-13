@@ -1,0 +1,605 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Хранилище Greenhouse_AtenaModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ClimateData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="GreenhouseId" Type="int" Nullable="false" />
+          <Property Name="Temperature" Type="int" Nullable="false" />
+          <Property Name="Humidity" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="Light" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="Timestamp" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Crops">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Sort" Type="int" Nullable="false" />
+          <Property Name="GrowthDays" Type="int" Nullable="false" />
+          <Property Name="OptimalTemperature" Type="int" Nullable="false" />
+          <Property Name="OptimalHumidity" Type="decimal" Precision="5" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Greenhouses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="PlantingZones">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="GreenhouseId" Type="int" Nullable="false" />
+          <Property Name="CropId" Type="int" Nullable="false" />
+          <Property Name="ZoneName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ExpectedHarvestDate" Type="datetime" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Area" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PracticeTemplates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="CropId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="Type_Crops">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="name_sort" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WorkPlans">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="GreenhouseId" Type="int" Nullable="false" />
+          <Property Name="StartDate" Type="datetime" Nullable="false" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WorkTasks">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="WorkPlanId" Type="int" Nullable="false" />
+          <Property Name="PlantingZoneId" Type="int" />
+          <Property Name="Description" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="DueDate" Type="datetime" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AssignedTo" Type="nvarchar" MaxLength="100" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="1000" />
+        </EntityType>
+        <Association Name="FK__ClimateDa__Green__5812160E">
+          <End Role="Greenhouses" Type="Self.Greenhouses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ClimateData" Type="Self.ClimateData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Greenhouses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ClimateData">
+              <PropertyRef Name="GreenhouseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Crops__Sort__4BAC3F29">
+          <End Role="Type_Crops" Type="Self.Type_Crops" Multiplicity="1" />
+          <End Role="Crops" Type="Self.Crops" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Type_Crops">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Crops">
+              <PropertyRef Name="Sort" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PlantingZ__CropI__5165187F">
+          <End Role="Crops" Type="Self.Crops" Multiplicity="1" />
+          <End Role="PlantingZones" Type="Self.PlantingZones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crops">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlantingZones">
+              <PropertyRef Name="CropId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PlantingZ__Green__5070F446">
+          <End Role="Greenhouses" Type="Self.Greenhouses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="PlantingZones" Type="Self.PlantingZones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Greenhouses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlantingZones">
+              <PropertyRef Name="GreenhouseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PracticeT__CropI__5441852A">
+          <End Role="Crops" Type="Self.Crops" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="PracticeTemplates" Type="Self.PracticeTemplates" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crops">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PracticeTemplates">
+              <PropertyRef Name="CropId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__WorkPlans__Green__5AEE82B9">
+          <End Role="Greenhouses" Type="Self.Greenhouses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="WorkPlans" Type="Self.WorkPlans" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Greenhouses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WorkPlans">
+              <PropertyRef Name="GreenhouseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__WorkTasks__Plant__5EBF139D">
+          <End Role="PlantingZones" Type="Self.PlantingZones" Multiplicity="0..1" />
+          <End Role="WorkTasks" Type="Self.WorkTasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PlantingZones">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WorkTasks">
+              <PropertyRef Name="PlantingZoneId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__WorkTasks__WorkP__5DCAEF64">
+          <End Role="WorkPlans" Type="Self.WorkPlans" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="WorkTasks" Type="Self.WorkTasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WorkPlans">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WorkTasks">
+              <PropertyRef Name="WorkPlanId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Хранилище Greenhouse_AtenaModelContainer">
+          <EntitySet Name="ClimateData" EntityType="Self.ClimateData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Crops" EntityType="Self.Crops" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Greenhouses" EntityType="Self.Greenhouses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlantingZones" EntityType="Self.PlantingZones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PracticeTemplates" EntityType="Self.PracticeTemplates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Type_Crops" EntityType="Self.Type_Crops" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WorkPlans" EntityType="Self.WorkPlans" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WorkTasks" EntityType="Self.WorkTasks" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__ClimateDa__Green__5812160E" Association="Self.FK__ClimateDa__Green__5812160E">
+            <End Role="Greenhouses" EntitySet="Greenhouses" />
+            <End Role="ClimateData" EntitySet="ClimateData" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Crops__Sort__4BAC3F29" Association="Self.FK__Crops__Sort__4BAC3F29">
+            <End Role="Type_Crops" EntitySet="Type_Crops" />
+            <End Role="Crops" EntitySet="Crops" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PlantingZ__CropI__5165187F" Association="Self.FK__PlantingZ__CropI__5165187F">
+            <End Role="Crops" EntitySet="Crops" />
+            <End Role="PlantingZones" EntitySet="PlantingZones" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PlantingZ__Green__5070F446" Association="Self.FK__PlantingZ__Green__5070F446">
+            <End Role="Greenhouses" EntitySet="Greenhouses" />
+            <End Role="PlantingZones" EntitySet="PlantingZones" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PracticeT__CropI__5441852A" Association="Self.FK__PracticeT__CropI__5441852A">
+            <End Role="Crops" EntitySet="Crops" />
+            <End Role="PracticeTemplates" EntitySet="PracticeTemplates" />
+          </AssociationSet>
+          <AssociationSet Name="FK__WorkPlans__Green__5AEE82B9" Association="Self.FK__WorkPlans__Green__5AEE82B9">
+            <End Role="Greenhouses" EntitySet="Greenhouses" />
+            <End Role="WorkPlans" EntitySet="WorkPlans" />
+          </AssociationSet>
+          <AssociationSet Name="FK__WorkTasks__Plant__5EBF139D" Association="Self.FK__WorkTasks__Plant__5EBF139D">
+            <End Role="PlantingZones" EntitySet="PlantingZones" />
+            <End Role="WorkTasks" EntitySet="WorkTasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK__WorkTasks__WorkP__5DCAEF64" Association="Self.FK__WorkTasks__WorkP__5DCAEF64">
+            <End Role="WorkPlans" EntitySet="WorkPlans" />
+            <End Role="WorkTasks" EntitySet="WorkTasks" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Greenhouse_AtenaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ClimateData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="GreenhouseId" Type="Int32" Nullable="false" />
+          <Property Name="Temperature" Type="Int32" Nullable="false" />
+          <Property Name="Humidity" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="Light" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
+          <Property Name="Timestamp" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Greenhouses" Relationship="Self.FK__ClimateDa__Green__5812160E" FromRole="ClimateData" ToRole="Greenhouses" />
+        </EntityType>
+        <EntityType Name="Crops">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sort" Type="Int32" Nullable="false" />
+          <Property Name="GrowthDays" Type="Int32" Nullable="false" />
+          <Property Name="OptimalTemperature" Type="Int32" Nullable="false" />
+          <Property Name="OptimalHumidity" Type="Decimal" Precision="5" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Type_Crops" Relationship="Self.FK__Crops__Sort__4BAC3F29" FromRole="Crops" ToRole="Type_Crops" />
+          <NavigationProperty Name="PlantingZones" Relationship="Self.FK__PlantingZ__CropI__5165187F" FromRole="Crops" ToRole="PlantingZones" />
+          <NavigationProperty Name="PracticeTemplates" Relationship="Self.FK__PracticeT__CropI__5441852A" FromRole="Crops" ToRole="PracticeTemplates" />
+        </EntityType>
+        <EntityType Name="Greenhouses">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ClimateData" Relationship="Self.FK__ClimateDa__Green__5812160E" FromRole="Greenhouses" ToRole="ClimateData" />
+          <NavigationProperty Name="PlantingZones" Relationship="Self.FK__PlantingZ__Green__5070F446" FromRole="Greenhouses" ToRole="PlantingZones" />
+          <NavigationProperty Name="WorkPlans" Relationship="Self.FK__WorkPlans__Green__5AEE82B9" FromRole="Greenhouses" ToRole="WorkPlans" />
+        </EntityType>
+        <EntityType Name="PlantingZones">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="GreenhouseId" Type="Int32" Nullable="false" />
+          <Property Name="CropId" Type="Int32" Nullable="false" />
+          <Property Name="ZoneName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ExpectedHarvestDate" Type="DateTime" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Area" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Crops" Relationship="Self.FK__PlantingZ__CropI__5165187F" FromRole="PlantingZones" ToRole="Crops" />
+          <NavigationProperty Name="Greenhouses" Relationship="Self.FK__PlantingZ__Green__5070F446" FromRole="PlantingZones" ToRole="Greenhouses" />
+          <NavigationProperty Name="WorkTasks" Relationship="Self.FK__WorkTasks__Plant__5EBF139D" FromRole="PlantingZones" ToRole="WorkTasks" />
+        </EntityType>
+        <EntityType Name="PracticeTemplates">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="CropId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Crops" Relationship="Self.FK__PracticeT__CropI__5441852A" FromRole="PracticeTemplates" ToRole="Crops" />
+        </EntityType>
+        <EntityType Name="Type_Crops">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="name_sort" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Crops" Relationship="Self.FK__Crops__Sort__4BAC3F29" FromRole="Type_Crops" ToRole="Crops" />
+        </EntityType>
+        <EntityType Name="WorkPlans">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="GreenhouseId" Type="Int32" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Greenhouses" Relationship="Self.FK__WorkPlans__Green__5AEE82B9" FromRole="WorkPlans" ToRole="Greenhouses" />
+          <NavigationProperty Name="WorkTasks" Relationship="Self.FK__WorkTasks__WorkP__5DCAEF64" FromRole="WorkPlans" ToRole="WorkTasks" />
+        </EntityType>
+        <EntityType Name="WorkTasks">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="WorkPlanId" Type="Int32" Nullable="false" />
+          <Property Name="PlantingZoneId" Type="Int32" />
+          <Property Name="Description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DueDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AssignedTo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PlantingZones" Relationship="Self.FK__WorkTasks__Plant__5EBF139D" FromRole="WorkTasks" ToRole="PlantingZones" />
+          <NavigationProperty Name="WorkPlans" Relationship="Self.FK__WorkTasks__WorkP__5DCAEF64" FromRole="WorkTasks" ToRole="WorkPlans" />
+        </EntityType>
+        <Association Name="FK__ClimateDa__Green__5812160E">
+          <End Role="Greenhouses" Type="Self.Greenhouses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ClimateData" Type="Self.ClimateData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Greenhouses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ClimateData">
+              <PropertyRef Name="GreenhouseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Crops__Sort__4BAC3F29">
+          <End Role="Type_Crops" Type="Self.Type_Crops" Multiplicity="1" />
+          <End Role="Crops" Type="Self.Crops" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Type_Crops">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Crops">
+              <PropertyRef Name="Sort" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PlantingZ__CropI__5165187F">
+          <End Role="Crops" Type="Self.Crops" Multiplicity="1" />
+          <End Role="PlantingZones" Type="Self.PlantingZones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crops">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlantingZones">
+              <PropertyRef Name="CropId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PracticeT__CropI__5441852A">
+          <End Role="Crops" Type="Self.Crops" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="PracticeTemplates" Type="Self.PracticeTemplates" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Crops">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PracticeTemplates">
+              <PropertyRef Name="CropId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__PlantingZ__Green__5070F446">
+          <End Role="Greenhouses" Type="Self.Greenhouses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="PlantingZones" Type="Self.PlantingZones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Greenhouses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="PlantingZones">
+              <PropertyRef Name="GreenhouseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__WorkPlans__Green__5AEE82B9">
+          <End Role="Greenhouses" Type="Self.Greenhouses" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="WorkPlans" Type="Self.WorkPlans" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Greenhouses">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WorkPlans">
+              <PropertyRef Name="GreenhouseId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__WorkTasks__Plant__5EBF139D">
+          <End Role="PlantingZones" Type="Self.PlantingZones" Multiplicity="0..1" />
+          <End Role="WorkTasks" Type="Self.WorkTasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PlantingZones">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WorkTasks">
+              <PropertyRef Name="PlantingZoneId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__WorkTasks__WorkP__5DCAEF64">
+          <End Role="WorkPlans" Type="Self.WorkPlans" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="WorkTasks" Type="Self.WorkTasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="WorkPlans">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="WorkTasks">
+              <PropertyRef Name="WorkPlanId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Greenhouse_AtenaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ClimateData" EntityType="Self.ClimateData" />
+          <EntitySet Name="Crops" EntityType="Self.Crops" />
+          <EntitySet Name="Greenhouses" EntityType="Self.Greenhouses" />
+          <EntitySet Name="PlantingZones" EntityType="Self.PlantingZones" />
+          <EntitySet Name="PracticeTemplates" EntityType="Self.PracticeTemplates" />
+          <EntitySet Name="Type_Crops" EntityType="Self.Type_Crops" />
+          <EntitySet Name="WorkPlans" EntityType="Self.WorkPlans" />
+          <EntitySet Name="WorkTasks" EntityType="Self.WorkTasks" />
+          <AssociationSet Name="FK__ClimateDa__Green__5812160E" Association="Self.FK__ClimateDa__Green__5812160E">
+            <End Role="Greenhouses" EntitySet="Greenhouses" />
+            <End Role="ClimateData" EntitySet="ClimateData" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Crops__Sort__4BAC3F29" Association="Self.FK__Crops__Sort__4BAC3F29">
+            <End Role="Type_Crops" EntitySet="Type_Crops" />
+            <End Role="Crops" EntitySet="Crops" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PlantingZ__CropI__5165187F" Association="Self.FK__PlantingZ__CropI__5165187F">
+            <End Role="Crops" EntitySet="Crops" />
+            <End Role="PlantingZones" EntitySet="PlantingZones" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PracticeT__CropI__5441852A" Association="Self.FK__PracticeT__CropI__5441852A">
+            <End Role="Crops" EntitySet="Crops" />
+            <End Role="PracticeTemplates" EntitySet="PracticeTemplates" />
+          </AssociationSet>
+          <AssociationSet Name="FK__PlantingZ__Green__5070F446" Association="Self.FK__PlantingZ__Green__5070F446">
+            <End Role="Greenhouses" EntitySet="Greenhouses" />
+            <End Role="PlantingZones" EntitySet="PlantingZones" />
+          </AssociationSet>
+          <AssociationSet Name="FK__WorkPlans__Green__5AEE82B9" Association="Self.FK__WorkPlans__Green__5AEE82B9">
+            <End Role="Greenhouses" EntitySet="Greenhouses" />
+            <End Role="WorkPlans" EntitySet="WorkPlans" />
+          </AssociationSet>
+          <AssociationSet Name="FK__WorkTasks__Plant__5EBF139D" Association="Self.FK__WorkTasks__Plant__5EBF139D">
+            <End Role="PlantingZones" EntitySet="PlantingZones" />
+            <End Role="WorkTasks" EntitySet="WorkTasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK__WorkTasks__WorkP__5DCAEF64" Association="Self.FK__WorkTasks__WorkP__5DCAEF64">
+            <End Role="WorkPlans" EntitySet="WorkPlans" />
+            <End Role="WorkTasks" EntitySet="WorkTasks" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Хранилище Greenhouse_AtenaModelContainer" CdmEntityContainer="Greenhouse_AtenaEntities">
+          <EntitySetMapping Name="ClimateData">
+            <EntityTypeMapping TypeName="Greenhouse_AtenaModel.ClimateData">
+              <MappingFragment StoreEntitySet="ClimateData">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GreenhouseId" ColumnName="GreenhouseId" />
+                <ScalarProperty Name="Temperature" ColumnName="Temperature" />
+                <ScalarProperty Name="Humidity" ColumnName="Humidity" />
+                <ScalarProperty Name="Light" ColumnName="Light" />
+                <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Crops">
+            <EntityTypeMapping TypeName="Greenhouse_AtenaModel.Crops">
+              <MappingFragment StoreEntitySet="Crops">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="GrowthDays" ColumnName="GrowthDays" />
+                <ScalarProperty Name="OptimalTemperature" ColumnName="OptimalTemperature" />
+                <ScalarProperty Name="OptimalHumidity" ColumnName="OptimalHumidity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Greenhouses">
+            <EntityTypeMapping TypeName="Greenhouse_AtenaModel.Greenhouses">
+              <MappingFragment StoreEntitySet="Greenhouses">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlantingZones">
+            <EntityTypeMapping TypeName="Greenhouse_AtenaModel.PlantingZones">
+              <MappingFragment StoreEntitySet="PlantingZones">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GreenhouseId" ColumnName="GreenhouseId" />
+                <ScalarProperty Name="CropId" ColumnName="CropId" />
+                <ScalarProperty Name="ZoneName" ColumnName="ZoneName" />
+                <ScalarProperty Name="ExpectedHarvestDate" ColumnName="ExpectedHarvestDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Area" ColumnName="Area" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PracticeTemplates">
+            <EntityTypeMapping TypeName="Greenhouse_AtenaModel.PracticeTemplates">
+              <MappingFragment StoreEntitySet="PracticeTemplates">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CropId" ColumnName="CropId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Type_Crops">
+            <EntityTypeMapping TypeName="Greenhouse_AtenaModel.Type_Crops">
+              <MappingFragment StoreEntitySet="Type_Crops">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name_sort" ColumnName="name_sort" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WorkPlans">
+            <EntityTypeMapping TypeName="Greenhouse_AtenaModel.WorkPlans">
+              <MappingFragment StoreEntitySet="WorkPlans">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="GreenhouseId" ColumnName="GreenhouseId" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WorkTasks">
+            <EntityTypeMapping TypeName="Greenhouse_AtenaModel.WorkTasks">
+              <MappingFragment StoreEntitySet="WorkTasks">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="WorkPlanId" ColumnName="WorkPlanId" />
+                <ScalarProperty Name="PlantingZoneId" ColumnName="PlantingZoneId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="AssignedTo" ColumnName="AssignedTo" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
