@@ -164,10 +164,14 @@
       <DependentUpon>DB_Greenhouse.edmx</DependentUpon>
       <LastGenOutput>DB_Greenhouse.cs</LastGenOutput>
     </Content>
+    <Resource Include="icons\calendar_icon.png" />
+    <Resource Include="icons\plants_icon.png" />
+    <Resource Include="icons\greenhouse_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

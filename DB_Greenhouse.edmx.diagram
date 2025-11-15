@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="01e0a9c3e382405a93410c6abcb75ee4" Name="Diagram1">
+      <Diagram DiagramId="01e0a9c3e382405a93410c6abcb75ee4" Name="Diagram1" ZoomLevel="86">
         <EntityTypeShape EntityType="Greenhouse_AtenaModel.ClimateData" Width="1.5" PointX="3" PointY="4.375" IsExpanded="true" />
         <EntityTypeShape EntityType="Greenhouse_AtenaModel.Crops" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="Greenhouse_AtenaModel.Greenhouses" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />

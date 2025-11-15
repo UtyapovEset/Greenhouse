@@ -68,6 +68,33 @@ namespace Greenhose {
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
         [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
         void System.Windows.Markup.IComponentConnector.Connect(int connectionId, object target) {
+            switch (connectionId)
+            {
+            case 1:
+            
+            #line 40 "..\..\MainWindow.xaml"
+            ((System.Windows.Controls.Border)(target)).MouseLeftButtonDown += new System.Windows.Input.MouseButtonEventHandler(this.GreenhousesBlock_MouseLeftButtonDown);
+            
+            #line default
+            #line hidden
+            return;
+            case 2:
+            
+            #line 67 "..\..\MainWindow.xaml"
+            ((System.Windows.Controls.Border)(target)).MouseLeftButtonDown += new System.Windows.Input.MouseButtonEventHandler(this.PlantsBlock_MouseLeftButtonDown);
+            
+            #line default
+            #line hidden
+            return;
+            case 3:
+            
+            #line 97 "..\..\MainWindow.xaml"
+            ((System.Windows.Controls.Border)(target)).MouseLeftButtonDown += new System.Windows.Input.MouseButtonEventHandler(this.CalendarBlock_MouseLeftButtonDown);
+            
+            #line default
+            #line hidden
+            return;
+            }
             this._contentLoaded = true;
         }
     }
