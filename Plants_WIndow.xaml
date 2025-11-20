@@ -1,0 +1,232 @@
+﻿<Window x:Class="Greenhose.Plants_WIndow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Greenhose"
+        mc:Ignorable="d"
+        Title="Plants_WIndow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#2A3849" Padding="15" Height="60">
+            <TextBlock Text="Управление растениями" 
+                  FontSize="24" 
+                  Foreground="White" 
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"/>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="#F8F9FA">
+                <StackPanel Margin="15">
+                    <TextBlock Text="Культуры" 
+                          FontSize="18" 
+                          FontWeight="Bold" 
+                          Margin="0,0,0,15"/>
+
+                    <TextBox x:Name="SearchTextBox" 
+                        Margin="0,0,0,10"
+                        FontSize="14"
+                        TextChanged="SearchTextBox_TextChanged">
+                    </TextBox>
+
+                    <ListBox x:Name="PlantsListBox" 
+                        Height="400"
+                        BorderThickness="0"
+                        Background="Transparent"
+                        SelectionChanged="PlantsListBox_SelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White" 
+                                   Margin="0,2" 
+                                   Padding="10"
+                                   BorderBrush="#EEE" 
+                                   BorderThickness="1">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse Width="12" 
+                                            Height="12" 
+                                            Fill="#4CAF50" 
+                                            Margin="0,0,10,0"
+                                            VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Name}" 
+                                              FontWeight="SemiBold"
+                                              VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="2" Background="White">
+                <ScrollViewer>
+                    <StackPanel Margin="20">
+                        <TextBlock x:Name="PlantNameText" 
+                              FontSize="20" 
+                              FontWeight="Bold" 
+                              Margin="0,0,0,20"
+                              Foreground="#2A3849"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="200"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Margin="0,0,20,0">
+
+                                <Border Background="#F8F9FA" Padding="15" Margin="0,0,0,15">
+                                    <StackPanel>
+                                        <TextBlock Text="Основная информация" 
+                                              FontWeight="Bold" 
+                                              Margin="0,0,0,10"
+                                              Foreground="#2A3849"/>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                            <TextBlock Text="Вид:" 
+                                                  FontWeight="SemiBold" 
+                                                  Width="120"
+                                                  Foreground="#666"/>
+                                            <TextBlock x:Name="SortText" 
+                                                  Foreground="#333"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                            <TextBlock Text="Период роста:" 
+                                                  FontWeight="SemiBold" 
+                                                  Width="120"
+                                                  Foreground="#666"/>
+                                            <TextBlock x:Name="GrowthDaysText" 
+                                                  Foreground="#333"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                            <TextBlock Text="Температура:" 
+                                                  FontWeight="SemiBold" 
+                                                  Width="120"
+                                                  Foreground="#666"/>
+                                            <TextBlock x:Name="TemperatureText" 
+                                                  Foreground="#333"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                            <TextBlock Text="Влажность:" 
+                                                  FontWeight="SemiBold" 
+                                                  Width="120"
+                                                  Foreground="#666"/>
+                                            <TextBlock x:Name="HumidityText" 
+                                                  Foreground="#333"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                            <TextBlock Text="Статус:" 
+                                                  FontWeight="SemiBold" 
+                                                  Width="120"
+                                                  Foreground="#666"/>
+                                            <TextBlock x:Name="StatusText" 
+                                                  Foreground="#333"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="Дата сбора:" 
+                                                  FontWeight="SemiBold" 
+                                                  Width="120"
+                                                  Foreground="#666"/>
+                                            <TextBlock x:Name="HarvestDateText" 
+                                                  Foreground="#333"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Background="#F8F9FA" Padding="15">
+                                    <StackPanel>
+                                        <TextBlock Text="Расположение в теплицах" 
+                                              FontWeight="Bold" 
+                                              Margin="0,0,0,10"
+                                              Foreground="#2A3849"/>
+
+                                        <ListBox x:Name="GreenhousesList" 
+                                            Height="120"
+                                            BorderThickness="0"
+                                            Background="Transparent">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="White" 
+                                                       Padding="8" 
+                                                       Margin="0,2"
+                                                       BorderBrush="#EEE" 
+                                                       BorderThickness="1">
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding GreenhouseName}" 
+                                                                  FontWeight="SemiBold"
+                                                                  Foreground="#333"/>
+                                                            <TextBlock Text="{Binding ZoneName}" 
+                                                                  FontSize="11"
+                                                                  Foreground="#666"
+                                                                  Margin="0,2,0,0"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </StackPanel>
+                                </Border>
+
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1">
+
+                                <Border Background="#F8F9FA" Padding="15" Margin="0,0,0,15">
+                                    <StackPanel>
+                                        <TextBlock Text="Состояние растения" 
+                                              FontWeight="Bold" 
+                                              HorizontalAlignment="Center"
+                                              Margin="0,0,0,10"
+                                              Foreground="#2A3849"/>
+
+                                        <Ellipse x:Name="HealthIndicator" 
+                                            Width="80" 
+                                            Height="80" 
+                                            Fill="#4CAF50"
+                                            HorizontalAlignment="Center"
+                                            Stroke="#DDD" 
+                                            StrokeThickness="2"/>
+
+                                        <TextBlock x:Name="HealthStatusText" 
+                                              Text="Хорошее состояние"
+                                              HorizontalAlignment="Center"
+                                              FontSize="12"
+                                              Margin="0,10,0,0"
+                                              Foreground="#666"/>
+                                    </StackPanel>
+                                </Border>
+
+                            </StackPanel>
+                        </Grid>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+        </Grid>
+
+        <Border Grid.Row="2" Background="#F5F5F5" Padding="10">
+            <TextBlock Text="ООО «Тепличное хозяйство Атэна» 2025" 
+                  Foreground="#666" 
+                  FontSize="11"
+                  HorizontalAlignment="Center"/>
+        </Border>
+    </Grid>
+</Window>

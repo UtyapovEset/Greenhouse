@@ -84,6 +84,9 @@
     <Compile Include="PlantingZones.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
+    <Compile Include="Plants_WIndow.xaml.cs">
+      <DependentUpon>Plants_WIndow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PracticeTemplates.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
@@ -118,6 +121,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Plants_WIndow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

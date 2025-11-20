@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="Хранилище Greenhouse_AtenaModelContainer" CdmEntityContainer="Greenhouse_AtenaEntities">
+    <EntitySetMapping Name="ClimateData">
+      <EntityTypeMapping TypeName="Greenhouse_AtenaModel.ClimateData">
+        <MappingFragment StoreEntitySet="ClimateData">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="GreenhouseId" ColumnName="GreenhouseId" />
+          <ScalarProperty Name="Temperature" ColumnName="Temperature" />
+          <ScalarProperty Name="Humidity" ColumnName="Humidity" />
+          <ScalarProperty Name="Light" ColumnName="Light" />
+          <ScalarProperty Name="Timestamp" ColumnName="Timestamp" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Crops">
+      <EntityTypeMapping TypeName="Greenhouse_AtenaModel.Crops">
+        <MappingFragment StoreEntitySet="Crops">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Sort" ColumnName="Sort" />
+          <ScalarProperty Name="GrowthDays" ColumnName="GrowthDays" />
+          <ScalarProperty Name="OptimalTemperature" ColumnName="OptimalTemperature" />
+          <ScalarProperty Name="OptimalHumidity" ColumnName="OptimalHumidity" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Greenhouses">
+      <EntityTypeMapping TypeName="Greenhouse_AtenaModel.Greenhouses">
+        <MappingFragment StoreEntitySet="Greenhouses">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PlantingZones">
+      <EntityTypeMapping TypeName="Greenhouse_AtenaModel.PlantingZones">
+        <MappingFragment StoreEntitySet="PlantingZones">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="GreenhouseId" ColumnName="GreenhouseId" />
+          <ScalarProperty Name="CropId" ColumnName="CropId" />
+          <ScalarProperty Name="ZoneName" ColumnName="ZoneName" />
+          <ScalarProperty Name="ExpectedHarvestDate" ColumnName="ExpectedHarvestDate" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Area" ColumnName="Area" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PracticeTemplates">
+      <EntityTypeMapping TypeName="Greenhouse_AtenaModel.PracticeTemplates">
+        <MappingFragment StoreEntitySet="PracticeTemplates">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="CropId" ColumnName="CropId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Type_Crops">
+      <EntityTypeMapping TypeName="Greenhouse_AtenaModel.Type_Crops">
+        <MappingFragment StoreEntitySet="Type_Crops">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name_sort" ColumnName="name_sort" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="WorkPlans">
+      <EntityTypeMapping TypeName="Greenhouse_AtenaModel.WorkPlans">
+        <MappingFragment StoreEntitySet="WorkPlans">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="GreenhouseId" ColumnName="GreenhouseId" />
+          <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+          <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="WorkTasks">
+      <EntityTypeMapping TypeName="Greenhouse_AtenaModel.WorkTasks">
+        <MappingFragment StoreEntitySet="WorkTasks">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="WorkPlanId" ColumnName="WorkPlanId" />
+          <ScalarProperty Name="PlantingZoneId" ColumnName="PlantingZoneId" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="AssignedTo" ColumnName="AssignedTo" />
+          <ScalarProperty Name="Comments" ColumnName="Comments" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

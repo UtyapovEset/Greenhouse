@@ -32,7 +32,9 @@ namespace Greenhose
 
         private void PlantsBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            Plants_WIndow plantsWindow = new Plants_WIndow();
+            plantsWindow.Show();
+            this.Close();
         }
 
         private void GreenhousesBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
