@@ -14,11 +14,17 @@
         </Grid.RowDefinitions>
 
         <Border Grid.Row="0" Background="#2A3849" Padding="15" Height="60">
-            <TextBlock Text="Управление растениями" 
+            <Grid>
+                <Button x:Name="BackButton" Width="40" Height="40" Background="#2A3849"  HorizontalAlignment="Left"
+                        VerticalAlignment="Center" Click="BackButton_Click">
+                    <Image Source="/icons/close_icon.png"/>
+                </Button>
+                <TextBlock Text="Управление растениями" 
                   FontSize="24" 
                   Foreground="White" 
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"/>
+            </Grid>
         </Border>
 
         <Grid Grid.Row="1" Margin="20">

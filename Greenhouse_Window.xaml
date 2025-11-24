@@ -1,0 +1,233 @@
+﻿<Window x:Class="Greenhose.Greenhouse_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Greenhose"
+        mc:Ignorable="d"
+        Title="Greenhouse_Window" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#F8F9FA">
+            <StackPanel>
+                <Border Background="#2A3849" Padding="15" Height="50">
+                    <Grid>
+                        <Button x:Name="BackButton" Width="40" Height="40" Background="#2A3849"  HorizontalAlignment="Left"
+                                VerticalAlignment="Center" Click="BackButton_Click">
+                            <Image Source="/icons/close_icon.png"/>
+                        </Button>
+
+                        <TextBlock Text="Список теплиц" 
+                              Foreground="White" 
+                              FontSize="18" 
+                              FontWeight="Bold"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <ListView x:Name="GreenhousesList" 
+                         SelectionChanged="GreenhousesList_SelectionChanged"
+                         BorderThickness="0"
+                         Background="Transparent">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" 
+                                   Margin="5" 
+                                   CornerRadius="5"
+                                   BorderThickness="1"
+                                   BorderBrush="#E0E0E0"
+                                   Padding="10">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Name}" 
+                                              FontSize="16" 
+                                              FontWeight="Bold"
+                                              Foreground="#333"/>
+                                    <TextBlock Text="{Binding Description}" 
+                                              FontSize="12" 
+                                              Foreground="#666"
+                                              TextWrapping="Wrap"
+                                              Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Column="2" Background="White" Margin="10">
+            <ScrollViewer x:Name="MainScrollViewer">
+                <StackPanel>
+
+                    <StackPanel x:Name="DetailsPanel" Visibility="Collapsed">
+
+                        <Border Background="#2196F3" CornerRadius="8" Padding="20" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock x:Name="GreenhouseName" 
+                                          Text="Название теплицы" 
+                                          Foreground="White" 
+                                          FontSize="24" 
+                                          FontWeight="Bold"/>
+                                <TextBlock x:Name="GreenhouseDescription" 
+                                          Text="Описание теплицы" 
+                                          Foreground="White" 
+                                          FontSize="14"
+                                          TextWrapping="Wrap"
+                                          Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Background="#E3F2FD" CornerRadius="8" Padding="15">
+                                <StackPanel>
+                                    <TextBlock Text="Климатические показатели" 
+                                              FontSize="18" 
+                                              FontWeight="Bold"
+                                              Foreground="#1976D2"
+                                              Margin="0,0,0,15"/>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                                        <TextBlock Text="Температура:" 
+                                                  FontWeight="SemiBold" 
+                                                  Foreground="#333"
+                                                  Width="120"/>
+                                        <TextBlock x:Name="TemperatureText" 
+                                                  Text="22°C" 
+                                                  Foreground="#1976D2"
+                                                  FontWeight="Bold"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                                        <TextBlock Text="Влажность:" 
+                                                  FontWeight="SemiBold" 
+                                                  Foreground="#333"
+                                                  Width="120"/>
+                                        <TextBlock x:Name="HumidityText" 
+                                                  Text="65%" 
+                                                  Foreground="#1976D2"
+                                                  FontWeight="Bold"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                                        <TextBlock Text="Освещенность:" 
+                                                  FontWeight="SemiBold" 
+                                                  Foreground="#333"
+                                                  Width="120"/>
+                                        <TextBlock x:Name="LightText" 
+                                                  Text="450 лк" 
+                                                  Foreground="#1976D2"
+                                                  FontWeight="Bold"/>
+                                    </StackPanel>
+
+                                    <TextBlock x:Name="LastUpdateText" 
+                                              Text="Обновлено: 19.01.2024 14:30" 
+                                              FontSize="10" 
+                                              Foreground="#666"
+                                              Margin="0,15,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Background="#E8F5E8" CornerRadius="8" Padding="15">
+                                <StackPanel>
+                                    <TextBlock Text="Зоны посадки" 
+                                              FontSize="18" 
+                                              FontWeight="Bold"
+                                              Foreground="#388E3C"
+                                              Margin="0,0,0,15"/>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                                        <TextBlock Text="Всего зон:" 
+                                                  FontWeight="SemiBold" 
+                                                  Foreground="#333"
+                                                  Width="100"/>
+                                        <TextBlock x:Name="TotalZonesText" 
+                                                  Text="3" 
+                                                  Foreground="#388E3C"
+                                                  FontWeight="Bold"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                                        <TextBlock Text="Общая площадь:" 
+                                                  FontWeight="SemiBold" 
+                                                  Foreground="#333"
+                                                  Width="100"/>
+                                        <TextBlock x:Name="TotalAreaText" 
+                                                  Text="180 м²" 
+                                                  Foreground="#388E3C"
+                                                  FontWeight="Bold"/>
+                                    </StackPanel>
+
+                                    <TextBlock Text="Активные культуры:" 
+                                              FontWeight="SemiBold" 
+                                              Foreground="#333"
+                                              Margin="0,15,0,5"/>
+
+                                    <ListView x:Name="ZonesList" 
+                                             Height="120" 
+                                             BorderThickness="0"
+                                             Background="Transparent">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="White" 
+                                                       Margin="2" 
+                                                       CornerRadius="4"
+                                                       Padding="8">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding ZoneName}" 
+                                                                  FontWeight="SemiBold"
+                                                                  Foreground="#333"/>
+                                                        <TextBlock Text="{Binding CropName}" 
+                                                                  FontSize="11" 
+                                                                  Foreground="#666"/>
+                                                        <TextBlock Text="{Binding Status}" 
+                                                                  FontSize="10" 
+                                                                  Foreground="#888"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Border Background="#FFF3E0" CornerRadius="8" Padding="15" Margin="0,20,0,0">
+                            <StackPanel>
+                                <TextBlock Text="Предназначение теплицы" 
+                                          FontSize="18" 
+                                          FontWeight="Bold"
+                                          Foreground="#F57C00"
+                                          Margin="0,0,0,10"/>
+
+                                <TextBlock x:Name="PurposeText" 
+                                          Text="Основное предназначение теплицы..." 
+                                          FontSize="14" 
+                                          Foreground="#333"
+                                          TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel x:Name="NoSelectionPanel" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Выберите теплицу для просмотра информации" 
+                                  FontSize="16" 
+                                  Foreground="#666"
+                                  HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Window>

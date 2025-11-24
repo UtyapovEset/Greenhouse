@@ -27,7 +27,9 @@ namespace Greenhose
 
         private void CalendarBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            Calendar_Window calendar = new Calendar_Window();
+            calendar.Show();
+            this.Close();
         }
 
         private void PlantsBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -39,7 +41,9 @@ namespace Greenhose
 
         private void GreenhousesBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            Greenhouse_Window greenhouseWindow = new Greenhouse_Window();
+            greenhouseWindow.Show();
+            this.Close();
         }
     }
 }

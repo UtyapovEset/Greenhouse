@@ -47,8 +47,10 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -67,6 +69,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Calendar_Window.xaml.cs">
+      <DependentUpon>Calendar_Window.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ClimateData.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
@@ -80,6 +85,9 @@
     </Compile>
     <Compile Include="Greenhouses.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Greenhouse_Window.xaml.cs">
+      <DependentUpon>Greenhouse_Window.xaml</DependentUpon>
     </Compile>
     <Compile Include="PlantingZones.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
@@ -99,6 +107,14 @@
     <Compile Include="WorkTasks.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
+    <Page Include="Calendar_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Greenhouse_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -171,6 +187,7 @@
       <DependentUpon>DB_Greenhouse.edmx</DependentUpon>
       <LastGenOutput>DB_Greenhouse.cs</LastGenOutput>
     </Content>
+    <Resource Include="icons\close_icon.png" />
     <Resource Include="icons\calendar_icon.png" />
     <Resource Include="icons\plants_icon.png" />
     <Resource Include="icons\greenhouse_icon.png" />
