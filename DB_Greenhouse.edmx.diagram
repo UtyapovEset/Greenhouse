@@ -21,6 +21,9 @@
         <AssociationConnector Association="Greenhouse_AtenaModel.FK__WorkPlans__Green__5AEE82B9" ManuallyRouted="false" />
         <AssociationConnector Association="Greenhouse_AtenaModel.FK__WorkTasks__Plant__5EBF139D" ManuallyRouted="false" />
         <AssociationConnector Association="Greenhouse_AtenaModel.FK__WorkTasks__WorkP__5DCAEF64" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="Greenhouse_AtenaModel.UserRoles" Width="1.5" PointX="8.375" PointY="1.125" />
+        <EntityTypeShape EntityType="Greenhouse_AtenaModel.Users" Width="1.5" PointX="10.625" PointY="0.875" />
+        <AssociationConnector Association="Greenhouse_AtenaModel.FK__Users__RoleId__72C60C4A" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -244,5 +244,43 @@
       <End Role="WorkPlans" EntitySet="WorkPlans" />
       <End Role="WorkTasks" EntitySet="WorkTasks" />
     </AssociationSet>
+    <EntitySet Name="UserRoles" EntityType="Greenhouse_AtenaModel.UserRoles" />
+    <EntitySet Name="Users" EntityType="Greenhouse_AtenaModel.Users" />
+    <AssociationSet Name="FK__Users__RoleId__72C60C4A" Association="Greenhouse_AtenaModel.FK__Users__RoleId__72C60C4A">
+      <End Role="UserRoles" EntitySet="UserRoles" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
   </EntityContainer>
+  <EntityType Name="UserRoles">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Users" Relationship="Greenhouse_AtenaModel.FK__Users__RoleId__72C60C4A" FromRole="UserRoles" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="FullName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="RoleId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="UserRoles" Relationship="Greenhouse_AtenaModel.FK__Users__RoleId__72C60C4A" FromRole="Users" ToRole="UserRoles" />
+  </EntityType>
+  <Association Name="FK__Users__RoleId__72C60C4A">
+    <End Type="Greenhouse_AtenaModel.UserRoles" Role="UserRoles" Multiplicity="1" />
+    <End Type="Greenhouse_AtenaModel.Users" Role="Users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserRoles">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema>

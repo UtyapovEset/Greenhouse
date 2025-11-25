@@ -23,6 +23,8 @@ C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Greenhose.ex
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Greenhose.pdb
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Calendar_Window.g.cs
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Calendar_Window.baml
-C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Greenhose.exe.config
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Greenhouse_Window.g.cs
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Greenhouse_Window.baml
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Authorization_Window.g.cs
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Authorization_Window.baml
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Greenhose.exe.config

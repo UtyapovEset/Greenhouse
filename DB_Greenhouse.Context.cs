@@ -33,5 +33,7 @@ namespace Greenhose
         public virtual DbSet<Type_Crops> Type_Crops { get; set; }
         public virtual DbSet<WorkPlans> WorkPlans { get; set; }
         public virtual DbSet<WorkTasks> WorkTasks { get; set; }
+        public virtual DbSet<UserRoles> UserRoles { get; set; }
+        public virtual DbSet<Users> Users { get; set; }
     }
 }

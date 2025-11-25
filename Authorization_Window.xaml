@@ -1,0 +1,84 @@
+﻿<Window x:Class="Greenhose.Authorization_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Greenhose"
+        mc:Ignorable="d"
+        Title="Authorization_Window" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#2A3849" Padding="15" Height="60">
+            <TextBlock Text="Авторизация в системе" 
+                      FontSize="24" 
+                      Foreground="White" 
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"/>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="50">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="#F8F9FA" Padding="20" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="Логин" 
+                              FontSize="16" 
+                              FontWeight="Bold" 
+                              Margin="0,0,0,10"/>
+
+                    <TextBox x:Name="UsernameTextBox" 
+                            FontSize="14"
+                            Padding="10"
+                            Height="40"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="1" Background="#F8F9FA" Padding="20" Margin="0,0,0,20">
+                <StackPanel>
+                    <TextBlock Text="Пароль" 
+                              FontSize="16" 
+                              FontWeight="Bold" 
+                              Margin="0,0,0,10"/>
+
+                    <PasswordBox x:Name="PasswordBox" 
+                                FontSize="14"
+                                Padding="10"
+                                Height="40"/>
+                </StackPanel>
+            </Border>
+
+            <Button Grid.Row="2" 
+                    Content="Войти" 
+                    Background="#4CAF50"
+                    Foreground="White"
+                    FontSize="16"
+                    Height="40"
+                    Click="LoginButton_Click"/>
+
+            <TextBlock Grid.Row="3" 
+                      x:Name="ErrorText"
+                      Foreground="Red" 
+                      FontSize="12"
+                      HorizontalAlignment="Center"
+                      Margin="0,10,0,0"
+                      Visibility="Collapsed"/>
+        </Grid>
+
+        <Border Grid.Row="2" Background="#F5F5F5" Padding="10">
+            <TextBlock Text="ООО «Тепличное хозяйство Атэна» 2025" 
+                      Foreground="#666" 
+                      FontSize="11"
+                      HorizontalAlignment="Center"/>
+        </Border>
+    </Grid>
+</Window>

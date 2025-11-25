@@ -69,6 +69,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Authorization_Window.xaml.cs">
+      <DependentUpon>Authorization_Window.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Calendar_Window.xaml.cs">
       <DependentUpon>Calendar_Window.xaml</DependentUpon>
     </Compile>
@@ -101,12 +104,22 @@
     <Compile Include="Type_Crops.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
+    <Compile Include="UserRoles.cs">
+      <DependentUpon>DB_Greenhouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Users.cs">
+      <DependentUpon>DB_Greenhouse.tt</DependentUpon>
+    </Compile>
     <Compile Include="WorkPlans.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
     <Compile Include="WorkTasks.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
+    <Page Include="Authorization_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Calendar_Window.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
