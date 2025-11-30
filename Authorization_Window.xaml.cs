@@ -44,12 +44,15 @@ namespace Greenhose
                     _context = new Greenhouse_AtenaEntities();
                 }
 
-                var user = _context.Users.FirstOrDefault(u => u.Username == username && u.Password == password);
+                var user = (from u in _context.Users
+                            join r in _context.UserRoles on u.RoleId equals r.Id
+                            where u.Username == username && u.Password == password
+                            select new { User = u, RoleName = r.Name })
+                          .FirstOrDefault();
 
                 if (user != null)
                 {
-
-                    MainWindow mainWindow = new MainWindow();
+                    MainWindow mainWindow = new MainWindow(user.RoleName);
                     mainWindow.Show();
                     this.Close();
                 }
@@ -63,7 +66,6 @@ namespace Greenhose
                 ShowError($"Ошибка: {ex.Message}");
             }
         }
-
         private void ShowError(string message)
         {
             ErrorText.Text = message;

@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:Greenhose"
         mc:Ignorable="d"
         Title="Calendar_Window" Height="450" Width="800">
-
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -50,6 +49,13 @@
                     <Calendar x:Name="MainCalendar"
                               SelectionMode="SingleDate"
                               SelectedDatesChanged="MainCalendar_SelectedDatesChanged"/>
+
+                    <StackPanel Margin="0,15,0,0">
+                        <Button x:Name="AddTaskButton" Content="Добавить задачу" Width="150" Height="30" 
+                               Margin="0,0,0,10" Background="#4CAF50" Foreground="White" Click="AddTaskButton_Click"/>
+                        <Button x:Name="AddPlanButton" Content="Добавить план" Width="150" Height="30" 
+                               Background="#2196F3" Foreground="White" Click="AddPlanButton_Click"/>
+                    </StackPanel>
                 </StackPanel>
             </Border>
 
@@ -73,7 +79,7 @@
                                HorizontalAlignment="Center"
                                Margin="0 0 0 10"/>
 
-                    <ListView x:Name="TasksList">
+                    <ListView x:Name="TasksList" Grid.Row="1">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Время" DisplayMemberBinding="{Binding Time}" Width="80"/>
@@ -83,6 +89,13 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                        <Button x:Name="EditTaskButton" Content="Редактировать" Width="100" Height="30" 
+                               Margin="0,0,10,0" Click="EditTaskButton_Click"/>
+                        <Button x:Name="DeleteTaskButton" Content="Удалить" Width="100" Height="30" 
+                               Click="DeleteTaskButton_Click"/>
+                    </StackPanel>
                 </Grid>
             </Border>
         </Grid>

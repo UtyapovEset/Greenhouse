@@ -31,6 +31,11 @@
                     </Grid>
                 </Border>
 
+                <StackPanel Orientation="Horizontal" Margin="10">
+                    <Button Content="Добавить" Width="80" Click="AddGreenhouseButton_Click"/>
+                    <Button Content="Удалить" Width="80" Margin="5,0,0,0" Click="DeleteGreenhouseButton_Click"/>
+                </StackPanel>
+
                 <ListView x:Name="GreenhousesList" 
                          SelectionChanged="GreenhousesList_SelectionChanged"
                          BorderThickness="0"

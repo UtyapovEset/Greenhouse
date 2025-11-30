@@ -69,6 +69,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddPlanWindow.xaml.cs">
+      <DependentUpon>AddPlanWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddTaskWindow.xaml.cs">
+      <DependentUpon>AddTaskWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Authorization_Window.xaml.cs">
       <DependentUpon>Authorization_Window.xaml</DependentUpon>
     </Compile>
@@ -78,6 +84,15 @@
     <Compile Include="ClimateData.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
+    <Compile Include="CompleteTaskWindow.xaml.cs">
+      <DependentUpon>CompleteTaskWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CreateGreenhouseWindow.xaml.cs">
+      <DependentUpon>CreateGreenhouseWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CreatePlantsWindow.xaml.cs">
+      <DependentUpon>CreatePlantsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Crops.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
@@ -85,6 +100,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EditTaskWindow.xaml.cs">
+      <DependentUpon>EditTaskWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Greenhouses.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
@@ -116,11 +134,35 @@
     <Compile Include="WorkTasks.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
+    <Page Include="AddPlanWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddTaskWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Authorization_Window.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Calendar_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CompleteTaskWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CreateGreenhouseWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CreatePlantsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditTaskWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

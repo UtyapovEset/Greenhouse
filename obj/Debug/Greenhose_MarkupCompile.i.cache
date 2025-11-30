@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\Есет\Desktop\документы\C#\Greenhose\App.xaml
-5-1217172051
+11-1677569609
 2-199535841
-23664790718
+29-34787580
 20860258147
-Authorization_Window.xaml;Calendar_Window.xaml;Greenhouse_Window.xaml;MainWindow.xaml;Plants_WIndow.xaml;
+AddPlanWindow.xaml;AddTaskWindow.xaml;Authorization_Window.xaml;Calendar_Window.xaml;CompleteTaskWindow.xaml;CreateGreenhouseWindow.xaml;CreatePlantsWindow.xaml;EditTaskWindow.xaml;Greenhouse_Window.xaml;MainWindow.xaml;Plants_WIndow.xaml;
 
 True
 

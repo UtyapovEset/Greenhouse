@@ -15,16 +15,22 @@ using System.Windows.Shapes;
 
 namespace Greenhose
 {
+
     public partial class Plants_WIndow : Window
     {
         private Greenhouse_AtenaEntities _context;
         private List<Crops> _allCrops;
+        private string _currentUserRole;
 
-        public Plants_WIndow()
+        public Plants_WIndow(string userRole)
         {
             InitializeComponent();
             _context = new Greenhouse_AtenaEntities();
+            _currentUserRole = userRole;
             LoadPlants();
+
+            AddButton.Visibility = Visibility.Visible;
+            DeleteButton.Visibility = Visibility.Visible;
         }
 
         private void LoadPlants()
@@ -70,11 +76,7 @@ namespace Greenhose
             StatusText.Text = "Активная";
             HarvestDateText.Text = DateTime.Now.AddDays(selectedCrop.GrowthDays).ToString("dd.MM.yyyy");
 
-            HealthIndicator.Fill = new SolidColorBrush(Colors.Green);
-            HealthStatusText.Text = "Хорошее состояние";
-
             UpdateHealthStatus(selectedCrop);
-
             LoadGreenhousesForCrop(selectedCrop.Id);
         }
 
@@ -130,9 +132,60 @@ namespace Greenhose
             }
         }
 
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentUserRole != "Admin" && _currentUserRole != "Agronomist" && _currentUserRole != "Technologist")
+            {
+                MessageBox.Show("У вас нет прав для добавления культур", "Ошибка доступа",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var addWindow = new CreatePlantsWindow();
+            if (addWindow.ShowDialog() == true)
+            {
+                LoadPlants();
+            }
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentUserRole != "Admin" && _currentUserRole != "Agronomist")
+            {
+                MessageBox.Show("У вас нет прав для удаления культур", "Ошибка доступа",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (PlantsListBox.SelectedItem is Crops selectedCrop)
+            {
+                var result = MessageBox.Show($"Удалить культуру '{selectedCrop.Name}'?", "Подтверждение удаления",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _context.Crops.Remove(selectedCrop);
+                        _context.SaveChanges();
+                        LoadPlants();
+                        MessageBox.Show("Культура удалена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите культуру для удаления", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = new MainWindow();
+            MainWindow mainWindow = new MainWindow(_currentUserRole);
             mainWindow.Show();
             this.Close();
         }

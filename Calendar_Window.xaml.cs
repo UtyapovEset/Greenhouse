@@ -21,13 +21,41 @@ namespace Greenhose
     public partial class Calendar_Window : Window
     {
         private Greenhouse_AtenaEntities context;
+        private string _currentUserRole;
 
-        public Calendar_Window()
+        public Calendar_Window(string userRole)
         {
             InitializeComponent();
             context = new Greenhouse_AtenaEntities();
             MainCalendar.SelectedDate = DateTime.Today;
             LoadTasksForDate(DateTime.Today);
+            _currentUserRole = userRole;
+            CheckUserPermissions();
+        }
+
+        private void CheckUserPermissions()
+        {
+            if (_currentUserRole == "Admin" || _currentUserRole == "Agronomist")
+            {
+                AddTaskButton.Visibility = Visibility.Visible;
+                AddPlanButton.Visibility = Visibility.Visible;
+                EditTaskButton.Visibility = Visibility.Visible;
+                DeleteTaskButton.Visibility = Visibility.Visible;
+            }
+            else if (_currentUserRole == "Technologist")
+            {
+                AddTaskButton.Visibility = Visibility.Visible;
+                AddPlanButton.Visibility = Visibility.Collapsed;
+                EditTaskButton.Visibility = Visibility.Visible;
+                DeleteTaskButton.Visibility = Visibility.Collapsed;
+            }
+            else if (_currentUserRole == "Worker")
+            {
+                AddTaskButton.Visibility = Visibility.Collapsed;
+                AddPlanButton.Visibility = Visibility.Collapsed;
+                EditTaskButton.Visibility = Visibility.Visible;
+                DeleteTaskButton.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void MainCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
@@ -60,6 +88,7 @@ namespace Greenhose
                 {
                     TasksList.ItemsSource = tasks.Select(t => new
                     {
+                        TaskId = t.Id,
                         Time = t.DueDate.ToShortTimeString(),
                         Description = t.Description,
                         Status = t.Status,
@@ -78,9 +107,113 @@ namespace Greenhose
             }
         }
 
+        private void AddTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentUserRole != "Admin" && _currentUserRole != "Agronomist" && _currentUserRole != "Technologist")
+            {
+                MessageBox.Show("У вас нет прав для добавления задач", "Ошибка доступа",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var addTaskWindow = new AddTaskWindow(MainCalendar.SelectedDate ?? DateTime.Today);
+            if (addTaskWindow.ShowDialog() == true)
+            {
+                LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
+            }
+        }
+
+        private void AddPlanButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentUserRole != "Admin" && _currentUserRole != "Agronomist")
+            {
+                MessageBox.Show("У вас нет прав для добавления планов", "Ошибка доступа",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var addPlanWindow = new AddPlanWindow();
+            if (addPlanWindow.ShowDialog() == true)
+            {
+                LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
+            }
+        }
+
+        private void EditTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (TasksList.SelectedItem != null)
+            {
+                dynamic selectedTask = TasksList.SelectedItem;
+                int taskId = selectedTask.TaskId;
+
+                if (_currentUserRole == "Worker")
+                {
+                    var completeTaskWindow = new CompleteTaskWindow(taskId);
+                    if (completeTaskWindow.ShowDialog() == true)
+                    {
+                        LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
+                    }
+                }
+                else
+                {
+                    var editTaskWindow = new EditTaskWindow(taskId);
+                    if (editTaskWindow.ShowDialog() == true)
+                    {
+                        LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите задачу");
+            }
+        }
+
+        private void DeleteTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentUserRole != "Admin" && _currentUserRole != "Agronomist")
+            {
+                MessageBox.Show("У вас нет прав для удаления задач", "Ошибка доступа",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (TasksList.SelectedItem != null)
+            {
+                dynamic selectedTask = TasksList.SelectedItem;
+                int taskId = selectedTask.TaskId;
+
+                var result = MessageBox.Show("Удалить выбранную задачу?", "Подтверждение удаления",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        var taskToDelete = context.WorkTasks.Find(taskId);
+                        if (taskToDelete != null)
+                        {
+                            context.WorkTasks.Remove(taskToDelete);
+                            context.SaveChanges();
+                            LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
+                            MessageBox.Show("Задача удалена");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка удаления: {ex.Message}");
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите задачу для удаления");
+            }
+        }
+
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = new MainWindow();
+            MainWindow mainWindow = new MainWindow(_currentUserRole);
             mainWindow.Show();
             this.Close();
         }

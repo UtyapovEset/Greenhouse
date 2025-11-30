@@ -1,0 +1,56 @@
+﻿<Window x:Class="Greenhose.EditTaskWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Greenhose"
+        mc:Ignorable="d"
+        Title="EditTaskWindow" Height="550" Width="500">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Дата:" Grid.Row="0" Margin="0,0,0,5"/>
+        <DatePicker x:Name="TaskDatePicker" Grid.Row="1" Margin="0,0,0,15" Height="25"/>
+
+        <TextBlock Text="Время:" Grid.Row="2" Margin="0,0,0,5"/>
+        <TextBox x:Name="TimeTextBox" Grid.Row="3" Margin="0,0,0,15" Height="25"/>
+
+        <TextBlock Text="Описание задачи:" Grid.Row="4" Margin="0,0,0,5"/>
+        <TextBox x:Name="DescriptionTextBox" Grid.Row="5" Height="80" TextWrapping="Wrap" 
+                VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+
+        <TextBlock Text="Исполнитель:" Grid.Row="6" Margin="0,0,0,5"/>
+        <TextBox x:Name="AssignedToTextBox" Grid.Row="7" Margin="0,0,0,15" Height="25"/>
+
+        <TextBlock Text="Комментарии:" Grid.Row="8" Margin="0,0,0,5"/>
+        <TextBox x:Name="CommentsTextBox" Grid.Row="9" Height="60" TextWrapping="Wrap" 
+                VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+
+        <TextBlock Text="Статус:" Grid.Row="10" Margin="0,0,0,5"/>
+        <ComboBox x:Name="StatusComboBox" Grid.Row="11" Margin="0,0,0,60" Height="25">
+            <ComboBoxItem Content="Запланирована" IsSelected="True"/>
+            <ComboBoxItem Content="В работе"/>
+            <ComboBoxItem Content="Выполнена"/>
+            <ComboBoxItem Content="Отменена"/>
+        </ComboBox>
+
+        <StackPanel Grid.Row="12" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <Button x:Name="SaveButton" Content="Сохранить" Width="100" Height="30" 
+                   Margin="0,0,10,0" Click="SaveButton_Click"/>
+            <Button x:Name="CancelButton" Content="Отмена" Width="100" Height="30" 
+                   Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

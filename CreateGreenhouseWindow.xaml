@@ -1,0 +1,91 @@
+﻿<Window x:Class="Greenhose.CreateGreenhouseWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Greenhose"
+        mc:Ignorable="d"
+        Title="CreateGreenhouseWindow" Height="450" Width="800">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TabControl Grid.Row="1" Margin="0,10,0,15">
+            <TabItem Header="Основная информация">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Название:" Margin="0,0,0,5"/>
+                    <TextBox x:Name="NameTextBox" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="Описание:" Margin="0,0,0,5"/>
+                    <TextBox x:Name="DescriptionTextBox" Height="80" TextWrapping="Wrap" 
+                            VerticalScrollBarVisibility="Auto" Margin="0,0,0,15"/>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Климатические данные">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Температура (°C):" Margin="0,0,0,5"/>
+                    <TextBox x:Name="TemperatureTextBox" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="Влажность (%):" Margin="0,0,0,5"/>
+                    <TextBox x:Name="HumidityTextBox" Margin="0,0,0,15"/>
+
+                    <TextBlock Text="Освещенность (лк):" Margin="0,0,0,5"/>
+                    <TextBox x:Name="LightTextBox" Margin="0,0,0,15"/>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Зоны посадки">
+                <StackPanel Margin="10">
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Название зоны" Grid.Column="0" Margin="5"/>
+                        <TextBlock Text="Культура" Grid.Column="1" Margin="5"/>
+                        <TextBlock Text="Площадь (м²)" Grid.Column="2" Margin="5"/>
+                        <TextBlock Text="Статус" Grid.Column="3" Margin="5"/>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBox x:Name="ZoneNameTextBox" Width="120" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="CropComboBox" Width="120" Margin="0,0,10,0"/>
+                        <TextBox x:Name="AreaTextBox" Width="80" Margin="0,0,10,0"/>
+                        <ComboBox x:Name="StatusComboBox" Width="120" Margin="0,0,10,0">
+                            <ComboBoxItem Content="Активная" IsSelected="True"/>
+                            <ComboBoxItem Content="Неактивная"/>
+                            <ComboBoxItem Content="На обслуживании"/>
+                        </ComboBox>
+                        <Button x:Name="AddZoneButton" Content="Добавить" Width="80" Click="AddZoneButton_Click"/>
+                    </StackPanel>
+
+                    <ListView x:Name="ZonesListView" Height="200">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Название зоны" Width="120" DisplayMemberBinding="{Binding ZoneName}"/>
+                                <GridViewColumn Header="Культура" Width="120" DisplayMemberBinding="{Binding Crops.Name}"/>
+                                <GridViewColumn Header="Площадь (м²)" Width="80" DisplayMemberBinding="{Binding Area}"/>
+                                <GridViewColumn Header="Статус" Width="120" DisplayMemberBinding="{Binding Status}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="SaveButton" Content="Сохранить" Width="100" Height="30" 
+                   Margin="0,0,10,0" Click="SaveButton_Click"/>
+            <Button x:Name="CancelButton" Content="Отмена" Width="100" Height="30" 
+                   Click="CancelButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

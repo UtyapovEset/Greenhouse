@@ -20,28 +20,31 @@ namespace Greenhose
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private string _currentUserRole;
+
+        public MainWindow(string userRole)
         {
             InitializeComponent();
+            _currentUserRole = userRole;
         }
 
         private void CalendarBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Calendar_Window calendar = new Calendar_Window();
+            Calendar_Window calendar = new Calendar_Window(_currentUserRole);
             calendar.Show();
             this.Close();
         }
 
         private void PlantsBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Plants_WIndow plantsWindow = new Plants_WIndow();
+            Plants_WIndow plantsWindow = new Plants_WIndow(_currentUserRole);
             plantsWindow.Show();
             this.Close();
         }
 
         private void GreenhousesBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Greenhouse_Window greenhouseWindow = new Greenhouse_Window();
+            Greenhouse_Window greenhouseWindow = new Greenhouse_Window(_currentUserRole);
             greenhouseWindow.Show();
             this.Close();
         }

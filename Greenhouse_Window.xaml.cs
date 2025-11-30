@@ -20,22 +20,22 @@ namespace Greenhose
     public partial class Greenhouse_Window : Window
     {
         private Greenhouse_AtenaEntities context;
+        private string _currentUserRole;
 
-        public Greenhouse_Window()
+
+        public Greenhouse_Window(string currentUserRole )
         {
             InitializeComponent();
             context = new Greenhouse_AtenaEntities();
             LoadGreenhouses();
+            _currentUserRole = currentUserRole;
         }
 
         private void LoadGreenhouses()
         {
             try
             {
-                var greenhouses = context.Greenhouses
-                    .AsNoTracking()
-                    .ToList();
-
+                var greenhouses = context.Greenhouses.ToList();
                 GreenhousesList.ItemsSource = greenhouses;
             }
             catch (Exception ex)
@@ -117,9 +117,61 @@ namespace Greenhose
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow mainWindow = new MainWindow();
+            MainWindow mainWindow = new MainWindow(_currentUserRole);
             mainWindow.Show();
             this.Close();
+        }
+
+        private void DeleteGreenhouseButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (_currentUserRole != "Admin" && _currentUserRole != "Agronomist")
+            {
+                MessageBox.Show("У вас нет прав для удаления теплиц", "Ошибка доступа",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (GreenhousesList.SelectedItem is Greenhouses selectedGreenhouse)
+            {
+                var result = MessageBox.Show($"Удалить теплицу '{selectedGreenhouse.Name}'?", "Подтверждение удаления",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        context.Greenhouses.Remove(selectedGreenhouse);
+                        context.SaveChanges();
+                        LoadGreenhouses();
+                        MessageBox.Show("Теплица удалена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите теплицу для удаления", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void AddGreenhouseButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(_currentUserRole != "Admin" && _currentUserRole != "Agronomist" && _currentUserRole != "Technologist")
+            {
+                MessageBox.Show("У вас нет прав для добавления теплиц", "Ошибка доступа",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var addWindow = new CreateGreenhouseWindow();
+            if (addWindow.ShowDialog() == true)
+            {
+                LoadGreenhouses();
+            }
         }
     }
 }

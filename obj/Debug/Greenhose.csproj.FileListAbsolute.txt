@@ -27,4 +27,16 @@ C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Greenhouse_W
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Greenhouse_Window.baml
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Authorization_Window.g.cs
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Authorization_Window.baml
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CreatePlantsWindow.g.cs
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CreatePlantsWindow.baml
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CreateGreenhouseWindow.g.cs
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CreateGreenhouseWindow.baml
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Greenhose.exe.config
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\AddPlanWindow.g.cs
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\AddTaskWindow.g.cs
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\EditTaskWindow.g.cs
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\AddPlanWindow.baml
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\AddTaskWindow.baml
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\EditTaskWindow.baml
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CompleteTaskWindow.g.cs
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CompleteTaskWindow.baml
