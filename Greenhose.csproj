@@ -75,6 +75,9 @@
     <Compile Include="AddTaskWindow.xaml.cs">
       <DependentUpon>AddTaskWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddUserWindow.xaml.cs">
+      <DependentUpon>AddUserWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Authorization_Window.xaml.cs">
       <DependentUpon>Authorization_Window.xaml</DependentUpon>
     </Compile>
@@ -139,6 +142,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddTaskWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddUserWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -242,6 +249,7 @@
       <DependentUpon>DB_Greenhouse.edmx</DependentUpon>
       <LastGenOutput>DB_Greenhouse.cs</LastGenOutput>
     </Content>
+    <Resource Include="icons\i_newman.png" />
     <Resource Include="icons\close_icon.png" />
     <Resource Include="icons\calendar_icon.png" />
     <Resource Include="icons\plants_icon.png" />

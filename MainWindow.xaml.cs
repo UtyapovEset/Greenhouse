@@ -48,5 +48,18 @@ namespace Greenhose
             greenhouseWindow.Show();
             this.Close();
         }
+
+        private void AddUserButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentUserRole != "Admin")
+            {
+                MessageBox.Show("У вас нет прав для добавления пользователей", "Ошибка доступа",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var addUserWindow = new AddUserWindow();
+            addUserWindow.ShowDialog();
+        }
     }
 }

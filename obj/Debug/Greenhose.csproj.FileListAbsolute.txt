@@ -40,3 +40,5 @@ C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\AddTaskWindo
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\EditTaskWindow.baml
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CompleteTaskWindow.g.cs
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CompleteTaskWindow.baml
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\AddUserWindow.g.cs
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\AddUserWindow.baml

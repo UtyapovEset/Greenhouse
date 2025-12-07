@@ -112,10 +112,23 @@
         </Grid>
 
         <Border Grid.Row="2" Background="#F5F5F5" Padding="10">
-            <TextBlock Text="ООО «Тепличное хозяйство Атэна» 2025" 
-                      Foreground="#666" 
-                      FontSize="11"
-                      HorizontalAlignment="Center"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="AddUserButton" Width="50" Height="50" Background="#9C27B0" Grid.Column="0" Click="AddUserButton_Click">
+                    <Image Source="/icons/i_newman.png"/>
+                </Button>
+
+                <TextBlock Text="ООО «Тепличное хозяйство Атэна» 2025" 
+                          Foreground="#666" 
+                          FontSize="11"
+                          Grid.Column="1"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"/>
+            </Grid>
         </Border>
     </Grid>
 </Window>
