@@ -1,0 +1,329 @@
+﻿<Window x:Class="Greenhose.ReportsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Greenhose"
+        mc:Ignorable="d"
+        Title="ReportsWindow"  Height="700" Width="1200"
+        Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#2A3849" Height="60">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="BackButton" Grid.Column="0" Width="40" Height="40" Background="#2A3849" 
+                        Margin="10,0" Click="BackButton_Click">
+                    <Image Source="/icons/close_icon.png"/>
+                </Button>
+
+                <TextBlock Grid.Column="1" Text="Отчеты тепличного комплекса" 
+                          Foreground="White" FontSize="24" FontWeight="Bold"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                <Button x:Name="RefreshButton" Grid.Column="2" Content="Обновить" Width="80" Height="30"
+                        Margin="10,0" Background="#4CAF50" Foreground="White" Click="RefreshButton_Click"/>
+            </Grid>
+        </Border>
+
+        <ScrollViewer Grid.Row="1">
+            <Grid Margin="15">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" 
+                        CornerRadius="5" Margin="0,0,0,15" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="Ежедневный отчет" FontSize="18" FontWeight="Bold"
+                                  Foreground="#2A3849" Margin="0,0,0,10"/>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Background="#F5F9FF" Padding="10" Margin="5">
+                                <StackPanel>
+                                    <TextBlock Text="Климат в теплицах" FontWeight="Bold" Margin="0,0,0,5"/>
+                                    <ListView x:Name="DailyClimateList" Height="120">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Теплица" DisplayMemberBinding="{Binding Greenhouse}" Width="100"/>
+                                                <GridViewColumn Header="Темп." DisplayMemberBinding="{Binding AvgTemp}" Width="60"/>
+                                                <GridViewColumn Header="Влаж." DisplayMemberBinding="{Binding AvgHumidity}" Width="60"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Background="#F0FFF0" Padding="10" Margin="5">
+                                <StackPanel>
+                                    <TextBlock Text="Выполненные задачи" FontWeight="Bold" Margin="0,0,0,5"/>
+                                    <TextBlock x:Name="TasksCompletedText" FontSize="16" FontWeight="Bold" 
+                                              Foreground="#4CAF50" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Background="#FFF0F0" Padding="10" Margin="5">
+                                <StackPanel>
+                                    <TextBlock Text="Проблемные зоны" FontWeight="Bold" Margin="0,0,0,5"/>
+                                    <ListView x:Name="ProblemZonesList" Height="120">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Зона" DisplayMemberBinding="{Binding Zone}" Width="100"/>
+                                                <GridViewColumn Header="Теплица" DisplayMemberBinding="{Binding Greenhouse}" Width="100"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="3" Background="#FFF8E1" Padding="10" Margin="5">
+                                <StackPanel>
+                                    <TextBlock Text="Предстоящий сбор" FontWeight="Bold" Margin="0,0,0,5"/>
+                                    <ListView x:Name="UpcomingHarvestList" Height="120">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Культура" DisplayMemberBinding="{Binding Crop}" Width="80"/>
+                                                <GridViewColumn Header="Дата" DisplayMemberBinding="{Binding Date}" Width="80"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="1" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" 
+                        CornerRadius="5" Margin="0,0,0,15" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="Прогноз урожайности" FontSize="18" FontWeight="Bold"
+                                  Foreground="#2A3849" Margin="0,0,0,10"/>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Width="200" Margin="0,0,15,0">
+                                <Border Background="#E8F5E8" Padding="10" Margin="0,0,0,10" CornerRadius="5">
+                                    <StackPanel>
+                                        <TextBlock Text="Ближайшие 7 дней" FontWeight="Bold"/>
+                                        <TextBlock x:Name="Forecast7DaysText" FontSize="24" FontWeight="Bold" 
+                                                  Foreground="#388E3C" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Background="#FFF3E0" Padding="10" Margin="0,0,0,10" CornerRadius="5">
+                                    <StackPanel>
+                                        <TextBlock Text="30 дней" FontWeight="Bold"/>
+                                        <TextBlock x:Name="Forecast30DaysText" FontSize="24" FontWeight="Bold" 
+                                                  Foreground="#F57C00" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Background="#FFEBEE" Padding="10" CornerRadius="5">
+                                    <StackPanel>
+                                        <TextBlock Text="60 дней" FontWeight="Bold"/>
+                                        <TextBlock x:Name="Forecast60DaysText" FontSize="24" FontWeight="Bold" 
+                                                  Foreground="#D32F2F" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                            <Border Grid.Column="1" Background="#F8F9FA" Padding="10" CornerRadius="5">
+                                <StackPanel>
+                                    <TextBlock Text="Ближайший сбор" FontWeight="Bold" Margin="0,0,0,5"/>
+                                    <ListView x:Name="YieldForecastList" Height="150">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Культура" DisplayMemberBinding="{Binding Crop}" Width="100"/>
+                                                <GridViewColumn Header="Теплица" DisplayMemberBinding="{Binding Greenhouse}" Width="100"/>
+                                                <GridViewColumn Header="Дата сбора" DisplayMemberBinding="{Binding HarvestDate}" Width="100"/>
+                                                <GridViewColumn Header="Дней до сбора" DisplayMemberBinding="{Binding DaysLeft}" Width="80"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="2" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" 
+                        CornerRadius="5" Margin="0,0,0,15" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="Состояние культур" FontSize="18" FontWeight="Bold"
+                                  Foreground="#2A3849" Margin="0,0,0,10"/>
+
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Width="250" Margin="0,0,15,0">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Border Grid.Row="0" Background="#E8F5E8" Padding="10" Margin="0,0,0,10" CornerRadius="5">
+                                        <StackPanel>
+                                            <TextBlock Text="Хорошее состояние" FontWeight="Bold"/>
+                                            <TextBlock x:Name="GoodCropsText" FontSize="20" FontWeight="Bold" 
+                                                      Foreground="#388E3C" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Grid.Row="1" Background="#FFF3E0" Padding="10" Margin="0,0,0,10" CornerRadius="5">
+                                        <StackPanel>
+                                            <TextBlock Text="Требуют внимания" FontWeight="Bold"/>
+                                            <TextBlock x:Name="AttentionCropsText" FontSize="20" FontWeight="Bold" 
+                                                      Foreground="#F57C00" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Grid.Row="2" Background="#FFEBEE" Padding="10" CornerRadius="5">
+                                        <StackPanel>
+                                            <TextBlock Text="Критическое" FontWeight="Bold"/>
+                                            <TextBlock x:Name="CriticalCropsText" FontSize="20" FontWeight="Bold" 
+                                                      Foreground="#D32F2F" HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+
+                            <Border Grid.Column="1" Background="#F8F9FA" Padding="10" CornerRadius="5">
+                                <StackPanel>
+                                    <TextBlock Text="Проблемные культуры" FontWeight="Bold" Margin="0,0,0,5"/>
+                                    <ListView x:Name="CropStatusList" Height="150">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="Культура" DisplayMemberBinding="{Binding Name}" Width="120"/>
+                                                <GridViewColumn Header="Проблемных зон" DisplayMemberBinding="{Binding ProblemZones}" Width="100"/>
+                                                <GridViewColumn Header="Всего зон" DisplayMemberBinding="{Binding TotalZones}" Width="80"/>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="3" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" 
+                        CornerRadius="5" Margin="0,0,0,15" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Просроченные задачи" FontSize="18" FontWeight="Bold"
+                                      Foreground="#2A3849" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="OverdueTasksCountText" FontSize="18" FontWeight="Bold"
+                                      Foreground="#D32F2F" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <Border Grid.Row="1" Background="#FFF0F0" Padding="10" CornerRadius="5">
+                            <ListView x:Name="OverdueTasksList" Height="150">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Задача" DisplayMemberBinding="{Binding Task}" Width="200"/>
+                                        <GridViewColumn Header="Срок" DisplayMemberBinding="{Binding DueDate}" Width="120"/>
+                                        <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="100"/>
+                                        <GridViewColumn Header="Исполнитель" DisplayMemberBinding="{Binding AssignedTo}" Width="100"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="4" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" 
+                        CornerRadius="5" Padding="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="Выполнение задач" FontSize="18" FontWeight="Bold"
+                                  Foreground="#2A3849" Margin="0,0,0,10"/>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+                            <TextBlock Text="Период:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <DatePicker x:Name="PeriodStartDatePicker" Width="100" Margin="0,0,10,0"
+                                       SelectedDateChanged="PeriodStartDatePicker_SelectedDateChanged"/>
+                            <TextBlock Text="-" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <DatePicker x:Name="PeriodEndDatePicker" Width="100" Margin="0,0,15,0"
+                                       SelectedDateChanged="PeriodEndDatePicker_SelectedDateChanged"/>
+
+                            <TextBlock Text="Всего:" VerticalAlignment="Center" Margin="20,0,5,0"/>
+                            <TextBlock x:Name="TotalTasksText" FontWeight="Bold" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="Выполнено:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBlock x:Name="CompletedTasksText" FontWeight="Bold" Foreground="#4CAF50" 
+                                      VerticalAlignment="Center" Margin="0,0,15,0"/>
+                            <TextBlock Text="Не выполнено:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                            <TextBlock x:Name="NotCompletedTasksText" FontWeight="Bold" Foreground="#D32F2F" 
+                                      VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <Border Grid.Row="2" Background="#F8F9FA" Padding="10" CornerRadius="5">
+                            <ListView x:Name="TaskCompletionList" Height="150">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Дата и время" DisplayMemberBinding="{Binding Date}" Width="120"/>
+                                        <GridViewColumn Header="Задача" DisplayMemberBinding="{Binding Description}" Width="250"/>
+                                        <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="100"/>
+                                        <GridViewColumn Header="Исполнитель" DisplayMemberBinding="{Binding AssignedTo}" Width="100"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Window>

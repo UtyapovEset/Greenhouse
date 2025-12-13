@@ -116,9 +116,10 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="AddUserButton" Width="50" Height="50" Background="#9C27B0" Grid.Column="0" Click="AddUserButton_Click">
+                <Button x:Name="AddUserButton" Width="50" Height="50" Background="BlueViolet" Grid.Column="0" Click="AddUserButton_Click">
                     <Image Source="/icons/i_newman.png"/>
                 </Button>
 
@@ -128,6 +129,10 @@
                           Grid.Column="1"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"/>
+
+                <Button x:Name="Reports" Width="50" Height="50" Background="#9C27B0" Grid.Column="2" Click="Reports_Click">
+                    <Image Source="/icons/reports_icon.png"/>
+                </Button>
             </Grid>
         </Border>
     </Grid>

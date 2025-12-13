@@ -122,6 +122,9 @@
     <Compile Include="PracticeTemplates.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
+    <Compile Include="ReportsWindow.xaml.cs">
+      <DependentUpon>ReportsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Type_Crops.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
@@ -203,6 +206,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ReportsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -249,6 +256,7 @@
       <DependentUpon>DB_Greenhouse.edmx</DependentUpon>
       <LastGenOutput>DB_Greenhouse.cs</LastGenOutput>
     </Content>
+    <Resource Include="icons\reports_icon.png" />
     <Resource Include="icons\i_newman.png" />
     <Resource Include="icons\close_icon.png" />
     <Resource Include="icons\calendar_icon.png" />

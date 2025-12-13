@@ -15,7 +15,6 @@ using System.Windows.Shapes;
 
 namespace Greenhose
 {
-
     public partial class Plants_WIndow : Window
     {
         private Greenhouse_AtenaEntities _context;
