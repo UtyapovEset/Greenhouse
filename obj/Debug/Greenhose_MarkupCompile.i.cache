@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\Есет\Desktop\документы\C#\Greenhose\App.xaml
-131029727656
+16645416050
 2-199535841
-31559311631
+37-2000505629
 20860258147
-AddPlanWindow.xaml;AddTaskWindow.xaml;AddUserWindow.xaml;Authorization_Window.xaml;Calendar_Window.xaml;CompleteTaskWindow.xaml;CreateGreenhouseWindow.xaml;CreatePlantsWindow.xaml;EditTaskWindow.xaml;Greenhouse_Window.xaml;MainWindow.xaml;Plants_WIndow.xaml;ReportsWindow.xaml;
+AddPlanWindow.xaml;AddTaskWindow.xaml;AddUserWindow.xaml;Authorization_Window.xaml;Calendar_Window.xaml;CompleteTaskWindow.xaml;CreateGreenhouseWindow.xaml;CreatePlantsWindow.xaml;EditGreenhouseWindow.xaml;EditPlantsWindow.xaml;EditPlanWindow.xaml;EditTaskWindow.xaml;Greenhouse_Window.xaml;MainWindow.xaml;Plants_WIndow.xaml;ReportsWindow.xaml;
 
-True
+False
 

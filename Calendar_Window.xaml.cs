@@ -20,17 +20,22 @@ namespace Greenhose
     /// </summary>
     public partial class Calendar_Window : Window
     {
-        private Greenhouse_AtenaEntities context;
+        private GreenhouseFacade _facade;
         private string _currentUserRole;
+        private string _currentViewMode = "Задачи на день";
 
         public Calendar_Window(string userRole)
         {
             InitializeComponent();
-            context = new Greenhouse_AtenaEntities();
-            MainCalendar.SelectedDate = DateTime.Today;
-            LoadTasksForDate(DateTime.Today);
+            _facade = new GreenhouseFacade();
             _currentUserRole = userRole;
+            MainCalendar.SelectedDate = DateTime.Today;
+
             CheckUserPermissions();
+            this.Loaded += (s, e) =>
+            {
+                LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
+            };
         }
 
         private void CheckUserPermissions()
@@ -63,47 +68,167 @@ namespace Greenhose
             if (MainCalendar.SelectedDate.HasValue)
             {
                 DateTime selectedDate = MainCalendar.SelectedDate.Value;
-                LoadTasksForDate(selectedDate);
+                if (_currentViewMode == "Задачи на день")
+                {
+                    LoadTasksForDate(selectedDate);
+                }
+                else if (_currentViewMode == "Планы работ")
+                {
+                    LoadPlansForDate(selectedDate);
+                }
+            }
+        }
+
+        private void ViewModeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ViewModeComboBox.SelectedItem != null)
+            {
+                _currentViewMode = (ViewModeComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
+                switch (_currentViewMode)
+                {
+                    case "Задачи на день":
+                        LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
+                        break;
+                    case "Все задачи":
+                        LoadAllTasks();
+                        break;
+                    case "Планы работ":
+                        LoadAllPlans();
+                        break;
+                }
             }
         }
 
         private void LoadTasksForDate(DateTime date)
         {
+            if (TasksHeader == null)
+                return;
+
             TasksHeader.Text = (date.Date == DateTime.Today)
                 ? "Задачи на сегодня"
                 : $"Задачи на {date.ToShortDateString()}";
 
             try
             {
-                DateTime startDate = date.Date;
-                DateTime endDate = startDate.AddDays(1);
+                var tasks = _facade.GetTasksForDate(date);
 
-                var tasks = context.WorkTasks
-                    .AsNoTracking()
-                    .Where(t => t.DueDate >= startDate && t.DueDate < endDate)
-                    .OrderBy(t => t.DueDate)
-                    .ToList();
-
-                if (tasks.Any())
+                TasksList.ItemsSource = tasks.Select(t => new
                 {
+                    TaskId = t.Id,
+                    Date = t.DueDate.ToShortDateString(),
+                    Time = t.DueDate.ToShortTimeString(),
+                    Description = t.Description,
+                    Status = t.Status,
+                    AssignedTo = t.AssignedTo ?? "Не назначен",
+                    PlanName = t.WorkPlans != null ? $"План #{t.WorkPlanId}" : "Без плана"
+                }).ToList();
+
+                TasksCountText.Text = $"(Всего: {tasks.Count})";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                TasksList.ItemsSource = new List<string> { "Ошибка загрузки данных" };
+                TasksCountText.Text = "";
+            }
+        }
+
+        private void LoadAllTasks()
+        {
+            TasksHeader.Text = "Все задачи";
+            try
+            {
+                using (var context = new Greenhouse_AtenaEntities())
+                {
+                    var tasks = context.WorkTasks
+                        .AsNoTracking()
+                        .Include(t => t.WorkPlans)
+                        .OrderByDescending(t => t.DueDate)
+                        .Take(100)
+                        .ToList();
+
                     TasksList.ItemsSource = tasks.Select(t => new
                     {
                         TaskId = t.Id,
+                        Date = t.DueDate.ToShortDateString(),
                         Time = t.DueDate.ToShortTimeString(),
                         Description = t.Description,
                         Status = t.Status,
-                        AssignedTo = t.AssignedTo ?? "Не назначен"
+                        AssignedTo = t.AssignedTo ?? "Не назначен",
+                        PlanName = t.WorkPlans != null ? $"План #{t.WorkPlanId}" : "Без плана"
                     }).ToList();
-                }
-                else
-                {
-                    TasksList.ItemsSource = new List<string> { $"На {date.ToShortDateString()} задач не найдено" };
+
+                    TasksCountText.Text = $"(Показано: {tasks.Count}, всего в БД: {context.WorkTasks.Count()})";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки данных из БД: {ex.Message}", "Ошибка БД", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Ошибка загрузки всех задач: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 TasksList.ItemsSource = new List<string> { "Ошибка загрузки данных" };
+                TasksCountText.Text = "";
+            }
+        }
+
+        private void LoadAllPlans()
+        {
+            TasksHeader.Text = "Все планы работ";
+            try
+            {
+                using (var context = new Greenhouse_AtenaEntities())
+                {
+                    var plans = context.WorkPlans
+                        .AsNoTracking()
+                        .Include(p => p.WorkTasks)
+                        .OrderByDescending(p => p.StartDate)
+                        .ToList();
+
+                    TasksList.ItemsSource = plans.Select(p => new
+                    {
+                        PlanId = p.Id,
+                        Date = $"{p.StartDate.ToShortDateString()} - {p.EndDate.ToShortDateString()}",
+                        Time = "",
+                        Description = $"План #{p.Id} для теплицы",
+                        Status = p.Status,
+                        AssignedTo = $"Задач: {p.WorkTasks.Count}",
+                        PlanName = $"План #{p.Id}"
+                    }).ToList();
+
+                    TasksCountText.Text = $"(Всего планов: {plans.Count})";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки планов: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                TasksList.ItemsSource = new List<string> { "Ошибка загрузки данных" };
+                TasksCountText.Text = "";
+            }
+        }
+
+        private void LoadPlansForDate(DateTime date)
+        {
+            TasksHeader.Text = $"Планы на {date.ToShortDateString()}";
+            try
+            {
+                var plans = _facade.GetPlansForDate(date);
+
+                TasksList.ItemsSource = plans.Select(p => new
+                {
+                    PlanId = p.Id,
+                    Date = $"{p.StartDate.ToShortDateString()} - {p.EndDate.ToShortDateString()}",
+                    Time = "",
+                    Description = $"План #{p.Id} для теплицы",
+                    Status = p.Status,
+                    AssignedTo = $"Задач: {p.WorkTasks.Count}",
+                    PlanName = $"План #{p.Id}"
+                }).ToList();
+
+                TasksCountText.Text = $"(Найдено планов: {plans.Count})";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки планов: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                TasksList.ItemsSource = new List<string> { "Ошибка загрузки данных" };
+                TasksCountText.Text = "";
             }
         }
 
@@ -119,7 +244,7 @@ namespace Greenhose
             var addTaskWindow = new AddTaskWindow(MainCalendar.SelectedDate ?? DateTime.Today);
             if (addTaskWindow.ShowDialog() == true)
             {
-                LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
+                RefreshCurrentView();
             }
         }
 
@@ -135,37 +260,55 @@ namespace Greenhose
             var addPlanWindow = new AddPlanWindow();
             if (addPlanWindow.ShowDialog() == true)
             {
-                LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
+                RefreshCurrentView();
             }
         }
 
         private void EditTaskButton_Click(object sender, RoutedEventArgs e)
         {
-            if (TasksList.SelectedItem != null)
+            if (TasksList.SelectedItem == null)
             {
-                dynamic selectedTask = TasksList.SelectedItem;
-                int taskId = selectedTask.TaskId;
+                MessageBox.Show("Выберите задачу или план");
+                return;
+            }
 
-                if (_currentUserRole == "Worker")
+            dynamic item = TasksList.SelectedItem;
+
+            bool isPlan =
+                _currentViewMode == "Планы работ" ||
+                (_currentViewMode == "Все задачи" && item.TaskId == null);
+
+            if (isPlan)
+            {
+                if (_currentUserRole != "Admin" && _currentUserRole != "Agronomist")
                 {
-                    var completeTaskWindow = new CompleteTaskWindow(taskId);
-                    if (completeTaskWindow.ShowDialog() == true)
-                    {
-                        LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
-                    }
+                    MessageBox.Show("У вас нет прав для редактирования планов",
+                        "Ошибка доступа", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
-                else
-                {
-                    var editTaskWindow = new EditTaskWindow(taskId);
-                    if (editTaskWindow.ShowDialog() == true)
-                    {
-                        LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
-                    }
-                }
+
+                int planId = item.PlanId;
+                var editPlanWindow = new EditPlanWindow(planId);
+
+                if (editPlanWindow.ShowDialog() == true)
+                    RefreshCurrentView();
+
+                return;
+            }
+
+            int taskId = item.TaskId;
+
+            if (_currentUserRole == "Worker")
+            {
+                var completeTaskWindow = new CompleteTaskWindow(taskId);
+                if (completeTaskWindow.ShowDialog() == true)
+                    RefreshCurrentView();
             }
             else
             {
-                MessageBox.Show("Выберите задачу");
+                var editTaskWindow = new EditTaskWindow(taskId);
+                if (editTaskWindow.ShowDialog() == true)
+                    RefreshCurrentView();
             }
         }
 
@@ -173,41 +316,100 @@ namespace Greenhose
         {
             if (_currentUserRole != "Admin" && _currentUserRole != "Agronomist")
             {
-                MessageBox.Show("У вас нет прав для удаления задач", "Ошибка доступа",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("У вас нет прав для удаления",
+                    "Ошибка доступа", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            if (TasksList.SelectedItem != null)
+            if (TasksList.SelectedItem == null)
             {
-                dynamic selectedTask = TasksList.SelectedItem;
-                int taskId = selectedTask.TaskId;
+                MessageBox.Show("Выберите задачу или план для удаления");
+                return;
+            }
 
-                var result = MessageBox.Show("Удалить выбранную задачу?", "Подтверждение удаления",
-                    MessageBoxButton.YesNo, MessageBoxImage.Question);
+            dynamic item = TasksList.SelectedItem;
 
-                if (result == MessageBoxResult.Yes)
+            bool isPlan =
+                _currentViewMode == "Планы работ" ||
+                (_currentViewMode == "Все задачи" && item.TaskId == null);
+
+            if (isPlan)
+            {
+                int planId = item.PlanId;
+
+                var result = MessageBox.Show(
+                    "Удалить выбранный план и все его задачи?",
+                    "Подтверждение удаления",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result != MessageBoxResult.Yes)
+                    return;
+
+                try
                 {
-                    try
+                    using (var context = new Greenhouse_AtenaEntities())
                     {
-                        var taskToDelete = context.WorkTasks.Find(taskId);
-                        if (taskToDelete != null)
+                        var planToDelete = context.WorkPlans.Find(planId);
+                        if (planToDelete == null)
                         {
-                            context.WorkTasks.Remove(taskToDelete);
-                            context.SaveChanges();
-                            LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
-                            MessageBox.Show("Задача удалена");
+                            MessageBox.Show("План не найден");
+                            return;
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Ошибка удаления: {ex.Message}");
+
+                        context.WorkPlans.Remove(planToDelete);
+                        context.SaveChanges();
+
+                        RefreshCurrentView();
+                        MessageBox.Show("План удалён");
                     }
                 }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ошибка удаления плана: {ex.Message}",
+                        "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                return;
             }
-            else
+
+            int taskId = item.TaskId;
+
+            var taskResult = MessageBox.Show(
+                "Удалить выбранную задачу?",
+                "Подтверждение удаления",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (taskResult != MessageBoxResult.Yes)
+                return;
+
+            try
             {
-                MessageBox.Show("Выберите задачу для удаления");
+                _facade.DeleteWorkTask(taskId);
+                RefreshCurrentView();
+                MessageBox.Show("Задача удалена");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка удаления задачи: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void RefreshCurrentView()
+        {
+            switch (_currentViewMode)
+            {
+                case "Задачи на день":
+                    LoadTasksForDate(MainCalendar.SelectedDate ?? DateTime.Today);
+                    break;
+                case "Все задачи":
+                    LoadAllTasks();
+                    break;
+                case "Планы работ":
+                    LoadAllPlans();
+                    break;
             }
         }
 
@@ -216,6 +418,87 @@ namespace Greenhose
             MainWindow mainWindow = new MainWindow(_currentUserRole);
             mainWindow.Show();
             this.Close();
+        }
+
+        private void TasksList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (TasksList.SelectedItem != null)
+            {
+                dynamic selectedItem = TasksList.SelectedItem;
+
+                if (selectedItem.PlanId != null && selectedItem.PlanName != null && selectedItem.PlanName.Contains("План"))
+                {
+                    int planId = selectedItem.PlanId;
+                    OpenPlanTasks(planId);
+                }
+            }
+        }
+
+        private void OpenPlanTasks(int planId)
+        {
+            try
+            {
+                using (var context = new Greenhouse_AtenaEntities())
+                {
+                    var planTasksWindow = new Window
+                    {
+                        Title = $"Задачи плана #{planId}",
+                        Width = 800,
+                        Height = 500,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Owner = this
+                    };
+
+                    var grid = new Grid();
+                    grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                    grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+                    var plan = context.WorkPlans.Find(planId);
+                    var headerText = new TextBlock
+                    {
+                        Text = plan != null
+                            ? $"Задачи плана #{planId} (Теплица: {context.Greenhouses.Find(plan.GreenhouseId)?.Name}, {plan.StartDate:dd.MM.yyyy} - {plan.EndDate:dd.MM.yyyy})"
+                            : $"Задачи плана #{planId}",
+                        FontSize = 16,
+                        FontWeight = FontWeights.Bold,
+                        Margin = new Thickness(10),
+                        HorizontalAlignment = HorizontalAlignment.Center
+                    };
+                    Grid.SetRow(headerText, 0);
+                    grid.Children.Add(headerText);
+
+                    var tasksListView = new ListView();
+                    var gridView = new GridView();
+                    gridView.Columns.Add(new GridViewColumn { Header = "Дата", DisplayMemberBinding = new Binding("DueDate") { StringFormat = "dd.MM.yyyy HH:mm" }, Width = 120 });
+                    gridView.Columns.Add(new GridViewColumn { Header = "Описание", DisplayMemberBinding = new Binding("Description"), Width = 300 });
+                    gridView.Columns.Add(new GridViewColumn { Header = "Статус", DisplayMemberBinding = new Binding("Status"), Width = 100 });
+                    gridView.Columns.Add(new GridViewColumn { Header = "Исполнитель", DisplayMemberBinding = new Binding("AssignedTo"), Width = 120 });
+                    tasksListView.View = gridView;
+                    Grid.SetRow(tasksListView, 1);
+                    grid.Children.Add(tasksListView);
+
+                    var tasks = context.WorkTasks
+                        .Where(t => t.WorkPlanId == planId)
+                        .OrderBy(t => t.DueDate)
+                        .ToList();
+
+                    tasksListView.ItemsSource = tasks;
+
+                    planTasksWindow.Content = grid;
+                    planTasksWindow.ShowDialog();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка открытия задач плана: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _facade?.Dispose();
+            base.OnClosed(e);
         }
     }
 }

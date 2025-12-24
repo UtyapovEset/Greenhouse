@@ -128,6 +128,7 @@
 
                         <TextBlock Grid.Row="0" Text="Прогноз урожайности" FontSize="18" FontWeight="Bold"
                                   Foreground="#2A3849" Margin="0,0,0,10"/>
+                        <Button x:Name="UpdateHarvestDatesButton" HorizontalAlignment="Right" Content="Обновить даты сбора"  Width="120" Height="30" Margin="10,0"  Click="UpdateHarvestDatesButton_Click" Background="#FF5722" Foreground="White"/>
 
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>

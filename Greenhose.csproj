@@ -104,15 +104,26 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
+    <Compile Include="EditGreenhouseWindow.xaml.cs">
+      <DependentUpon>EditGreenhouseWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditPlantsWindow.xaml.cs">
+      <DependentUpon>EditPlantsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditPlanWindow.xaml.cs">
+      <DependentUpon>EditPlanWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EditTaskWindow.xaml.cs">
       <DependentUpon>EditTaskWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GreenhouseFacade.cs" />
     <Compile Include="Greenhouses.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
     <Compile Include="Greenhouse_Window.xaml.cs">
       <DependentUpon>Greenhouse_Window.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ITaskStatusAdapter.cs" />
     <Compile Include="PlantingZones.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
@@ -125,6 +136,7 @@
     <Compile Include="ReportsWindow.xaml.cs">
       <DependentUpon>ReportsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TaskStatusAdapter.cs" />
     <Compile Include="Type_Crops.cs">
       <DependentUpon>DB_Greenhouse.tt</DependentUpon>
     </Compile>
@@ -169,6 +181,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CreatePlantsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditGreenhouseWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditPlantsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditPlanWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

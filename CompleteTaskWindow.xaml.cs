@@ -19,14 +19,14 @@ namespace Greenhose
     /// </summary>
     public partial class CompleteTaskWindow : Window
     {
+        private GreenhouseFacade _facade;
         private int _taskId;
-        private Greenhouse_AtenaEntities _context;
 
         public CompleteTaskWindow(int taskId)
         {
             InitializeComponent();
+            _facade = new GreenhouseFacade();
             _taskId = taskId;
-            _context = new Greenhouse_AtenaEntities();
             LoadTaskData();
         }
 
@@ -34,10 +34,13 @@ namespace Greenhose
         {
             try
             {
-                var task = _context.WorkTasks.Find(_taskId);
-                if (task != null)
+                using (var context = new Greenhouse_AtenaEntities())
                 {
-                    TaskDescriptionText.Text = task.Description;
+                    var task = context.WorkTasks.Find(_taskId);
+                    if (task != null)
+                    {
+                        TaskDescriptionText.Text = task.Description;
+                    }
                 }
             }
             catch (Exception ex)
@@ -50,19 +53,18 @@ namespace Greenhose
         {
             try
             {
-                var task = _context.WorkTasks.Find(_taskId);
-                if (task != null)
+                var task = new WorkTasks
                 {
-                    task.Status = "Выполнена";
-                    if (!string.IsNullOrWhiteSpace(CompletionCommentsTextBox.Text))
-                    {
-                        task.Comments = CompletionCommentsTextBox.Text;
-                    }
-                    _context.SaveChanges();
-                    MessageBox.Show("Задача отмечена как выполненная");
-                    this.DialogResult = true;
-                    this.Close();
-                }
+                    Id = _taskId,
+                    Status = "Выполнена",
+                    Comments = CompletionCommentsTextBox.Text
+                };
+
+                _facade.UpdateWorkTask(task);
+
+                MessageBox.Show("Задача отмечена как выполненная");
+                this.DialogResult = true;
+                this.Close();
             }
             catch (Exception ex)
             {
@@ -73,6 +75,12 @@ namespace Greenhose
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _facade?.Dispose();
+            base.OnClosed(e);
         }
     }
 }

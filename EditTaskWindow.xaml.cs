@@ -19,14 +19,14 @@ namespace Greenhose
     /// </summary>
     public partial class EditTaskWindow : Window
     {
+        private GreenhouseFacade _facade;
         private int _taskId;
-        private Greenhouse_AtenaEntities _context;
 
         public EditTaskWindow(int taskId)
         {
             InitializeComponent();
+            _facade = new GreenhouseFacade();
             _taskId = taskId;
-            _context = new Greenhouse_AtenaEntities();
             LoadTaskData();
         }
 
@@ -34,21 +34,24 @@ namespace Greenhose
         {
             try
             {
-                var task = _context.WorkTasks.Find(_taskId);
-                if (task != null)
+                using (var context = new Greenhouse_AtenaEntities())
                 {
-                    TaskDatePicker.SelectedDate = task.DueDate.Date;
-                    TimeTextBox.Text = task.DueDate.ToShortTimeString();
-                    DescriptionTextBox.Text = task.Description;
-                    AssignedToTextBox.Text = task.AssignedTo;
-                    CommentsTextBox.Text = task.Comments;
-
-                    foreach (ComboBoxItem item in StatusComboBox.Items)
+                    var task = context.WorkTasks.Find(_taskId);
+                    if (task != null)
                     {
-                        if (item.Content.ToString() == task.Status)
+                        TaskDatePicker.SelectedDate = task.DueDate.Date;
+                        TimeTextBox.Text = task.DueDate.ToShortTimeString();
+                        DescriptionTextBox.Text = task.Description;
+                        AssignedToTextBox.Text = task.AssignedTo;
+                        CommentsTextBox.Text = task.Comments;
+
+                        foreach (ComboBoxItem item in StatusComboBox.Items)
                         {
-                            item.IsSelected = true;
-                            break;
+                            if (item.Content.ToString() == task.Status)
+                            {
+                                item.IsSelected = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -75,20 +78,20 @@ namespace Greenhose
 
             try
             {
-                var task = _context.WorkTasks.Find(_taskId);
-                if (task != null)
+                var task = new WorkTasks
                 {
-                    task.DueDate = TaskDatePicker.SelectedDate.Value.Date + TimeSpan.Parse(TimeTextBox.Text);
-                    task.Description = DescriptionTextBox.Text;
-                    task.AssignedTo = AssignedToTextBox.Text;
-                    task.Comments = CommentsTextBox.Text;
-                    task.Status = (StatusComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
+                    Id = _taskId,
+                    DueDate = TaskDatePicker.SelectedDate.Value.Date + TimeSpan.Parse(TimeTextBox.Text),
+                    Description = DescriptionTextBox.Text,
+                    AssignedTo = AssignedToTextBox.Text,
+                    Comments = CommentsTextBox.Text,
+                    Status = (StatusComboBox.SelectedItem as ComboBoxItem)?.Content.ToString()
+                };
 
-                    _context.SaveChanges();
-                    MessageBox.Show("Задача обновлена");
-                    this.DialogResult = true;
-                    this.Close();
-                }
+                _facade.UpdateWorkTask(task);
+                MessageBox.Show("Задача обновлена");
+                this.DialogResult = true;
+                this.Close();
             }
             catch (Exception ex)
             {
@@ -99,6 +102,12 @@ namespace Greenhose
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _facade?.Dispose();
+            base.OnClosed(e);
         }
     }
 }

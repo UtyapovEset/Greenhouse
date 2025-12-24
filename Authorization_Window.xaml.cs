@@ -19,11 +19,11 @@ namespace Greenhose
     /// </summary>
     public partial class Authorization_Window : Window
     {
-        private Greenhouse_AtenaEntities _context;
+        private GreenhouseFacade _facade;
         public Authorization_Window()
         {
             InitializeComponent();
-            _context = new Greenhouse_AtenaEntities();
+            _facade = new GreenhouseFacade();
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e)
@@ -39,20 +39,12 @@ namespace Greenhose
 
             try
             {
-                if (_context == null)
-                {
-                    _context = new Greenhouse_AtenaEntities();
-                }
-
-                var user = (from u in _context.Users
-                            join r in _context.UserRoles on u.RoleId equals r.Id
-                            where u.Username == username && u.Password == password
-                            select new { User = u, RoleName = r.Name })
-                          .FirstOrDefault();
+                var user = _facade.AuthenticateUser(username, password);
 
                 if (user != null)
                 {
-                    MainWindow mainWindow = new MainWindow(user.RoleName);
+                    string roleName = (string)user.GetType().GetProperty("Name").GetValue(user);
+                    MainWindow mainWindow = new MainWindow(roleName);
                     mainWindow.Show();
                     this.Close();
                 }
@@ -66,6 +58,7 @@ namespace Greenhose
                 ShowError($"Ошибка: {ex.Message}");
             }
         }
+
         private void ShowError(string message)
         {
             ErrorText.Text = message;
@@ -74,7 +67,7 @@ namespace Greenhose
 
         protected override void OnClosed(EventArgs e)
         {
-            _context?.Dispose();
+            _facade?.Dispose();
             base.OnClosed(e);
         }
     }

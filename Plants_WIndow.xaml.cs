@@ -17,14 +17,14 @@ namespace Greenhose
 {
     public partial class Plants_WIndow : Window
     {
-        private Greenhouse_AtenaEntities _context;
+        private GreenhouseFacade _facade;
         private List<Crops> _allCrops;
         private string _currentUserRole;
 
         public Plants_WIndow(string userRole)
         {
             InitializeComponent();
-            _context = new Greenhouse_AtenaEntities();
+            _facade = new GreenhouseFacade();
             _currentUserRole = userRole;
             LoadPlants();
 
@@ -36,7 +36,7 @@ namespace Greenhose
         {
             try
             {
-                _allCrops = _context.Crops.ToList();
+                _allCrops = _facade.GetCrops();
                 PlantsListBox.ItemsSource = _allCrops;
             }
             catch (Exception ex)
@@ -77,25 +77,28 @@ namespace Greenhose
 
             UpdateHealthStatus(selectedCrop);
             LoadGreenhousesForCrop(selectedCrop.Id);
+            UpdateHarvestDatesForCrop(selectedCrop);
         }
 
         private void LoadGreenhousesForCrop(int cropId)
         {
             try
             {
-                var plantingZones = _context.PlantingZones
-                    .Where(pz => pz.CropId == cropId)
-                    .Include(pz => pz.Greenhouses)
-                    .Select(pz => new
-                    {
-                        GreenhouseName = pz.Greenhouses.Name,
-                        ZoneName = pz.ZoneName,
-                        Area = pz.Area,
-                        ExpectedHarvestDate = pz.ExpectedHarvestDate
-                    })
-                    .ToList();
+                var cropWithDetails = _facade.GetCropWithDetails(cropId);
+                if (cropWithDetails != null && cropWithDetails.PlantingZones != null)
+                {
+                    var plantingZones = cropWithDetails.PlantingZones
+                        .Select(pz => new
+                        {
+                            GreenhouseName = pz.Greenhouses?.Name,
+                            ZoneName = pz.ZoneName,
+                            Area = pz.Area,
+                            ExpectedHarvestDate = pz.ExpectedHarvestDate
+                        })
+                        .ToList();
 
-                GreenhousesList.ItemsSource = plantingZones;
+                    GreenhousesList.ItemsSource = plantingZones;
+                }
             }
             catch (Exception ex)
             {
@@ -106,30 +109,87 @@ namespace Greenhose
 
         private void UpdateHealthStatus(Crops crop)
         {
-            var problemZones = crop.PlantingZones?.Count(pz => pz.Status == "Problem") ?? 0;
-            var totalZones = crop.PlantingZones?.Count ?? 0;
+            try
+            {
+                var cropWithDetails = _facade.GetCropWithDetails(crop.Id);
+                if (cropWithDetails == null || cropWithDetails.PlantingZones == null)
+                {
+                    HealthIndicator.Fill = new SolidColorBrush(Colors.Gray);
+                    HealthStatusText.Text = "Нет данных";
+                    return;
+                }
 
-            if (totalZones == 0)
+                var plantingZones = cropWithDetails.PlantingZones.ToList();
+
+                if (!plantingZones.Any())
+                {
+                    HealthIndicator.Fill = new SolidColorBrush(Colors.Gray);
+                    HealthStatusText.Text = "Нет данных";
+                    return;
+                }
+
+                int problemZones = 0;
+                int totalZones = plantingZones.Count;
+
+                foreach (var zone in plantingZones)
+                {
+                    var climateData = _facade.GetClimateData(zone.GreenhouseId, 1);
+                    var latestClimate = climateData.FirstOrDefault();
+
+                    if (latestClimate == null)
+                    {
+                        problemZones++;
+                        continue;
+                    }
+
+                    double tempDiff = Math.Abs(latestClimate.Temperature - crop.OptimalTemperature);
+                    bool tempProblem = tempDiff > 3;
+
+                    double humidityDiff = Math.Abs((double)(latestClimate.Humidity - crop.OptimalHumidity));
+                    bool humidityProblem = humidityDiff > 10;
+
+                    bool statusProblem = zone.Status == "На обслуживании" || zone.Status == "Проблема";
+
+                    if (tempProblem || humidityProblem || statusProblem)
+                    {
+                        problemZones++;
+                    }
+                }
+
+                if (problemZones == totalZones)
+                {
+                    HealthIndicator.Fill = new SolidColorBrush(Colors.Red);
+                    HealthStatusText.Text = "Критическое состояние";
+                }
+                else if (problemZones > totalZones * 0.5)
+                {
+                    HealthIndicator.Fill = new SolidColorBrush(Colors.OrangeRed);
+                    HealthStatusText.Text = "Плохое состояние";
+                }
+                else if (problemZones > 0)
+                {
+                    HealthIndicator.Fill = new SolidColorBrush(Colors.Orange);
+                    HealthStatusText.Text = "Требует внимания";
+                }
+                else
+                {
+                    HealthIndicator.Fill = new SolidColorBrush(Colors.Green);
+                    HealthStatusText.Text = "Хорошее состояние";
+                }
+
+                if (problemZones > 0)
+                {
+                    HealthStatusText.Text += $" ({problemZones}/{totalZones} проблемных зон)";
+                }
+            }
+            catch (Exception ex)
             {
                 HealthIndicator.Fill = new SolidColorBrush(Colors.Gray);
-                HealthStatusText.Text = "Нет данных";
-            }
-            else if (problemZones > totalZones * 0.5)
-            {
-                HealthIndicator.Fill = new SolidColorBrush(Colors.Red);
-                HealthStatusText.Text = "Критическое состояние";
-            }
-            else if (problemZones > 0)
-            {
-                HealthIndicator.Fill = new SolidColorBrush(Colors.Orange);
-                HealthStatusText.Text = "Требует внимания";
-            }
-            else
-            {
-                HealthIndicator.Fill = new SolidColorBrush(Colors.Green);
-                HealthStatusText.Text = "Хорошее состояние";
+                HealthStatusText.Text = "Ошибка данных";
+                Console.WriteLine($"Ошибка в UpdateHealthStatus: {ex.Message}");
             }
         }
+
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
@@ -151,34 +211,27 @@ namespace Greenhose
         {
             if (_currentUserRole != "Admin" && _currentUserRole != "Agronomist")
             {
-                MessageBox.Show("У вас нет прав для удаления культур", "Ошибка доступа",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("У вас нет прав для удаления культур");
                 return;
             }
 
             if (PlantsListBox.SelectedItem is Crops selectedCrop)
             {
-                var result = MessageBox.Show($"Удалить культуру '{selectedCrop.Name}'?", "Подтверждение удаления",
-                    MessageBoxButton.YesNo, MessageBoxImage.Question);
+                var result = MessageBox.Show($"Удалить культуру '{selectedCrop.Name}'?", "Подтверждение удаления", MessageBoxButton.YesNo);
 
                 if (result == MessageBoxResult.Yes)
                 {
                     try
                     {
-                        _context.Crops.Remove(selectedCrop);
-                        _context.SaveChanges();
+                        _facade.DeleteCrop(selectedCrop.Id);
                         LoadPlants();
-                        MessageBox.Show("Культура удалена", "Успех", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Культура удалена");
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show($"Ошибка удаления: {ex.Message}");
                     }
                 }
-            }
-            else
-            {
-                MessageBox.Show("Выберите культуру для удаления", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -187,6 +240,62 @@ namespace Greenhose
             MainWindow mainWindow = new MainWindow(_currentUserRole);
             mainWindow.Show();
             this.Close();
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentUserRole != "Admin" && _currentUserRole != "Agronomist" && _currentUserRole != "Technologist")
+            {
+                MessageBox.Show("У вас нет прав для редактирования культур", "Ошибка доступа",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (PlantsListBox.SelectedItem is Crops selectedCrop)
+            {
+                var editWindow = new EditPlantsWindow(selectedCrop);
+                if (editWindow.ShowDialog() == true)
+                {
+                    LoadPlants();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выберите культуру для редактирования", "Внимание",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void UpdateHarvestDatesForCrop(Crops crop)
+        {
+            try
+            {
+                var cropWithDetails = _facade.GetCropWithDetails(crop.Id);
+                if (cropWithDetails == null || cropWithDetails.PlantingZones == null)
+                    return;
+
+                var plantingZones = cropWithDetails.PlantingZones.ToList();
+
+                if (!plantingZones.Any())
+                    return;
+
+                foreach (var zone in plantingZones)
+                {
+                    zone.ExpectedHarvestDate = DateTime.Today.AddDays(crop.GrowthDays);
+                    _facade.UpdatePlantingZone(zone);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка обновления даты сбора: {ex.Message}",
+                    "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _facade?.Dispose();
+            base.OnClosed(e);
         }
     }
 }

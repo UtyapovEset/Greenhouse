@@ -33,6 +33,7 @@
 
                 <StackPanel Orientation="Horizontal" Margin="10">
                     <Button Content="Добавить" Width="80" Click="AddGreenhouseButton_Click"/>
+                    <Button x:Name="EditGreenhouseButton" Content="Редактировать" Width="90" Margin="5,0,0,0" Click="EditGreenhouseButton_Click"/>
                     <Button Content="Удалить" Width="80" Margin="5,0,0,0" Click="DeleteGreenhouseButton_Click"/>
                 </StackPanel>
 

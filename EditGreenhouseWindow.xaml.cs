@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,20 +16,45 @@ using System.Windows.Shapes;
 namespace Greenhose
 {
     /// <summary>
-    /// Логика взаимодействия для CreateGreenhouseWindow.xaml
+    /// Логика взаимодействия для EditGreenhouseWindow.xaml
     /// </summary>
-    public partial class CreateGreenhouseWindow : Window
+    public partial class EditGreenhouseWindow : Window
     {
         private GreenhouseFacade _facade;
+        private int _greenhouseId;
         private List<PlantingZones> _zones;
 
-        public CreateGreenhouseWindow()
+        public EditGreenhouseWindow(int id)
         {
             InitializeComponent();
             _facade = new GreenhouseFacade();
+            _greenhouseId = id;
             _zones = new List<PlantingZones>();
             ZonesListView.ItemsSource = _zones;
             LoadCrops();
+            LoadGreenhouseData();
+        }
+
+        private void LoadGreenhouseData()
+        {
+            try
+            {
+                var greenhouse = _facade.GetGreenhouseWithDetails(_greenhouseId);
+                if (greenhouse != null)
+                {
+                    NameTextBox.Text = greenhouse.Name;
+                    DescriptionTextBox.Text = greenhouse.Description;
+
+                    var existingZones = greenhouse.PlantingZones.ToList();
+
+                    _zones.AddRange(existingZones);
+                    ZonesListView.Items.Refresh();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}");
+            }
         }
 
         private void LoadCrops()
@@ -69,12 +95,19 @@ namespace Greenhose
                 return;
             }
 
+            var selectedStatus = StatusComboBox.SelectedValue?.ToString();
+            if (string.IsNullOrEmpty(selectedStatus))
+            {
+                MessageBox.Show("Выберите статус зоны");
+                return;
+            }
+
             var zone = new PlantingZones
             {
                 ZoneName = ZoneNameTextBox.Text,
                 CropId = (int)CropComboBox.SelectedValue,
                 Area = area,
-                Status = (StatusComboBox.SelectedItem as ComboBoxItem)?.Content.ToString(),
+                Status = selectedStatus,
                 ExpectedHarvestDate = DateTime.Now.AddMonths(3)
             };
 
@@ -93,50 +126,20 @@ namespace Greenhose
                 return;
             }
 
-            bool hasTemperature = !string.IsNullOrWhiteSpace(TemperatureTextBox.Text);
-            bool hasHumidity = !string.IsNullOrWhiteSpace(HumidityTextBox.Text);
-            bool hasLight = !string.IsNullOrWhiteSpace(LightTextBox.Text);
-
-            if (hasTemperature || hasHumidity || hasLight)
-            {
-                if (!hasTemperature || !hasHumidity || !hasLight)
-                {
-                    MessageBox.Show("Для добавления климатических данных необходимо заполнить все поля: Температура, Влажность и Освещенность",
-                        "Неполные данные", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                if (!int.TryParse(TemperatureTextBox.Text, out int temp))
-                {
-                    MessageBox.Show("Введите корректное значение температуры",
-                        "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                if (!decimal.TryParse(HumidityTextBox.Text, out decimal humidity))
-                {
-                    MessageBox.Show("Введите корректное значение влажности",
-                        "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                if (!decimal.TryParse(LightTextBox.Text, out decimal light))
-                {
-                    MessageBox.Show("Введите корректное значение освещенности",
-                        "Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-            }
-
             try
             {
-                var newGreenhouse = new Greenhouses
+                var greenhouse = new Greenhouses
                 {
+                    Id = _greenhouseId,
                     Name = NameTextBox.Text,
                     Description = DescriptionTextBox.Text
                 };
 
-                _facade.AddGreenhouse(newGreenhouse);
+                _facade.UpdateGreenhouse(greenhouse);
+
+                bool hasTemperature = !string.IsNullOrWhiteSpace(TemperatureTextBox.Text);
+                bool hasHumidity = !string.IsNullOrWhiteSpace(HumidityTextBox.Text);
+                bool hasLight = !string.IsNullOrWhiteSpace(LightTextBox.Text);
 
                 if (hasTemperature && hasHumidity && hasLight)
                 {
@@ -146,7 +149,7 @@ namespace Greenhose
                     {
                         var climateData = new ClimateData
                         {
-                            GreenhouseId = newGreenhouse.Id,
+                            GreenhouseId = _greenhouseId,
                             Temperature = temp,
                             Humidity = humidity,
                             Light = light,
@@ -156,13 +159,30 @@ namespace Greenhose
                     }
                 }
 
+                var existingZonesInDb = _facade.GetPlantingZones(_greenhouseId);
+
                 foreach (var zone in _zones)
                 {
-                    zone.GreenhouseId = newGreenhouse.Id;
-                    _facade.AddPlantingZone(zone);
+                    if (zone.Id == 0)
+                    {
+                        zone.GreenhouseId = _greenhouseId;
+                        _facade.AddPlantingZone(zone);
+                    }
+                    else
+                    {
+                        _facade.UpdatePlantingZone(zone);
+                    }
                 }
 
-                MessageBox.Show("Теплица и связанные данные добавлены успешно");
+                foreach (var zoneToDelete in existingZonesInDb)
+                {
+                    if (!_zones.Any(z => z.Id == zoneToDelete.Id))
+                    {
+                        _facade.DeletePlantingZone(zoneToDelete.Id);
+                    }
+                }
+
+                MessageBox.Show("Данные теплицы обновлены");
                 this.DialogResult = true;
                 this.Close();
             }

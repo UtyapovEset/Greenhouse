@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Greenhose"
         mc:Ignorable="d"
-        Title="Calendar_Window" Height="450" Width="800">
+        Title="Calendar_Window" Height="550" Width="900">
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,7 +14,7 @@
 
         <Border Grid.Row="0" Height="60" Background="#2A3849" CornerRadius="5" Padding="15">
             <Grid>
-                <Button x:Name="BackButton" Width="40" Height="40" Background="#2A3849"  HorizontalAlignment="Left"
+                <Button x:Name="BackButton" Width="40" Height="40" Background="#2A3849" HorizontalAlignment="Left"
                         VerticalAlignment="Center" Click="BackButton_Click">
                     <Image Source="/icons/close_icon.png"/>
                 </Button>
@@ -51,6 +51,13 @@
                               SelectedDatesChanged="MainCalendar_SelectedDatesChanged"/>
 
                     <StackPanel Margin="0,15,0,0">
+                        <ComboBox x:Name="ViewModeComboBox" Width="150" Margin="0,0,0,10"
+                                  SelectionChanged="ViewModeComboBox_SelectionChanged">
+                            <ComboBoxItem Content="Задачи на день" IsSelected="True"/>
+                            <ComboBoxItem Content="Все задачи"/>
+                            <ComboBoxItem Content="Планы работ"/>
+                        </ComboBox>
+
                         <Button x:Name="AddTaskButton" Content="Добавить задачу" Width="150" Height="30" 
                                Margin="0,0,0,10" Background="#4CAF50" Foreground="White" Click="AddTaskButton_Click"/>
                         <Button x:Name="AddPlanButton" Content="Добавить план" Width="150" Height="30" 
@@ -72,20 +79,29 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock x:Name="TasksHeader"
-                               Text="Задачи на сегодня"
-                               FontWeight="Bold"
-                               FontSize="20"
-                               HorizontalAlignment="Center"
-                               Margin="0 0 0 10"/>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 0 0 10">
+                        <TextBlock x:Name="TasksHeader"
+                                   Text="Задачи на сегодня"
+                                   FontWeight="Bold"
+                                   FontSize="20"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock x:Name="TasksCountText" 
+                                   Text="" 
+                                   FontSize="14"
+                                   Foreground="Gray"
+                                   VerticalAlignment="Center"
+                                   Margin="10,0,0,0"/>
+                    </StackPanel>
 
-                    <ListView x:Name="TasksList" Grid.Row="1">
+                    <ListView x:Name="TasksList" Grid.Row="1" MouseDoubleClick="TasksList_MouseDoubleClick">
                         <ListView.View>
                             <GridView>
+                                <GridViewColumn Header="Дата" DisplayMemberBinding="{Binding Date}" Width="100"/>
                                 <GridViewColumn Header="Время" DisplayMemberBinding="{Binding Time}" Width="80"/>
                                 <GridViewColumn Header="Описание" DisplayMemberBinding="{Binding Description}" Width="250"/>
                                 <GridViewColumn Header="Статус" DisplayMemberBinding="{Binding Status}" Width="100"/>
                                 <GridViewColumn Header="Исполнитель" DisplayMemberBinding="{Binding AssignedTo}" Width="120"/>
+                                <GridViewColumn Header="План" DisplayMemberBinding="{Binding PlanName}" Width="120"/>
                             </GridView>
                         </ListView.View>
                     </ListView>

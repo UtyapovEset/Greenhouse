@@ -71,7 +71,7 @@ namespace Greenhose
                 return;
             }
 
-            var reports = new ReportsWindow();
+            var reports = new ReportsWindow(_currentUserRole);
             reports.ShowDialog();
             this.Close();
         }

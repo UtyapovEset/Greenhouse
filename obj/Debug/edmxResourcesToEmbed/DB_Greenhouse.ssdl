@@ -4,7 +4,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="GreenhouseId" Type="int" Nullable="false" />
     <Property Name="Temperature" Type="int" Nullable="false" />
     <Property Name="Humidity" Type="decimal" Precision="5" Scale="2" Nullable="false" />
@@ -15,7 +15,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="Sort" Type="int" Nullable="false" />
     <Property Name="GrowthDays" Type="int" Nullable="false" />
@@ -26,7 +26,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="Description" Type="nvarchar" MaxLength="500" />
   </EntityType>
@@ -34,7 +34,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="GreenhouseId" Type="int" Nullable="false" />
     <Property Name="CropId" Type="int" Nullable="false" />
     <Property Name="ZoneName" Type="nvarchar" MaxLength="100" Nullable="false" />
@@ -46,7 +46,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="CropId" Type="int" Nullable="false" />
     <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="Description" Type="nvarchar" MaxLength="500" />
@@ -55,7 +55,7 @@
     <Key>
       <PropertyRef Name="id" />
     </Key>
-    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="name_sort" Type="nvarchar" MaxLength="50" Nullable="false" />
   </EntityType>
   <EntityType Name="UserRoles">
@@ -80,7 +80,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="GreenhouseId" Type="int" Nullable="false" />
     <Property Name="StartDate" Type="datetime" Nullable="false" />
     <Property Name="EndDate" Type="datetime" Nullable="false" />
@@ -90,7 +90,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="WorkPlanId" Type="int" Nullable="false" />
     <Property Name="PlantingZoneId" Type="int" />
     <Property Name="Description" Type="nvarchar" MaxLength="500" Nullable="false" />
@@ -99,7 +99,7 @@
     <Property Name="AssignedTo" Type="nvarchar" MaxLength="100" />
     <Property Name="Comments" Type="nvarchar" MaxLength="1000" />
   </EntityType>
-  <Association Name="FK__ClimateDa__Green__5812160E">
+  <Association Name="FK__ClimateDa__Green__236943A5">
     <End Role="Greenhouses" Type="Self.Greenhouses" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -113,7 +113,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Crops__Sort__4BAC3F29">
+  <Association Name="FK__Crops__Sort__17036CC0">
     <End Role="Type_Crops" Type="Self.Type_Crops" Multiplicity="1" />
     <End Role="Crops" Type="Self.Crops" Multiplicity="*" />
     <ReferentialConstraint>
@@ -125,7 +125,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__PlantingZ__CropI__5165187F">
+  <Association Name="FK__PlantingZ__CropI__1CBC4616">
     <End Role="Crops" Type="Self.Crops" Multiplicity="1" />
     <End Role="PlantingZones" Type="Self.PlantingZones" Multiplicity="*" />
     <ReferentialConstraint>
@@ -137,7 +137,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__PlantingZ__Green__5070F446">
+  <Association Name="FK__PlantingZ__Green__1BC821DD">
     <End Role="Greenhouses" Type="Self.Greenhouses" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -151,7 +151,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__PracticeT__CropI__5441852A">
+  <Association Name="FK__PracticeT__CropI__1F98B2C1">
     <End Role="Crops" Type="Self.Crops" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -177,7 +177,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__WorkPlans__Green__5AEE82B9">
+  <Association Name="FK__WorkPlans__Green__2645B050">
     <End Role="Greenhouses" Type="Self.Greenhouses" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -191,7 +191,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__WorkTasks__Plant__5EBF139D">
+  <Association Name="FK__WorkTasks__Plant__2A164134">
     <End Role="PlantingZones" Type="Self.PlantingZones" Multiplicity="0..1" />
     <End Role="WorkTasks" Type="Self.WorkTasks" Multiplicity="*" />
     <ReferentialConstraint>
@@ -203,7 +203,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__WorkTasks__WorkP__5DCAEF64">
+  <Association Name="FK__WorkTasks__WorkP__29221CFB">
     <End Role="WorkPlans" Type="Self.WorkPlans" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -228,23 +228,23 @@
     <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="WorkPlans" EntityType="Self.WorkPlans" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="WorkTasks" EntityType="Self.WorkTasks" Schema="dbo" store:Type="Tables" />
-    <AssociationSet Name="FK__ClimateDa__Green__5812160E" Association="Self.FK__ClimateDa__Green__5812160E">
+    <AssociationSet Name="FK__ClimateDa__Green__236943A5" Association="Self.FK__ClimateDa__Green__236943A5">
       <End Role="Greenhouses" EntitySet="Greenhouses" />
       <End Role="ClimateData" EntitySet="ClimateData" />
     </AssociationSet>
-    <AssociationSet Name="FK__Crops__Sort__4BAC3F29" Association="Self.FK__Crops__Sort__4BAC3F29">
+    <AssociationSet Name="FK__Crops__Sort__17036CC0" Association="Self.FK__Crops__Sort__17036CC0">
       <End Role="Type_Crops" EntitySet="Type_Crops" />
       <End Role="Crops" EntitySet="Crops" />
     </AssociationSet>
-    <AssociationSet Name="FK__PlantingZ__CropI__5165187F" Association="Self.FK__PlantingZ__CropI__5165187F">
+    <AssociationSet Name="FK__PlantingZ__CropI__1CBC4616" Association="Self.FK__PlantingZ__CropI__1CBC4616">
       <End Role="Crops" EntitySet="Crops" />
       <End Role="PlantingZones" EntitySet="PlantingZones" />
     </AssociationSet>
-    <AssociationSet Name="FK__PlantingZ__Green__5070F446" Association="Self.FK__PlantingZ__Green__5070F446">
+    <AssociationSet Name="FK__PlantingZ__Green__1BC821DD" Association="Self.FK__PlantingZ__Green__1BC821DD">
       <End Role="Greenhouses" EntitySet="Greenhouses" />
       <End Role="PlantingZones" EntitySet="PlantingZones" />
     </AssociationSet>
-    <AssociationSet Name="FK__PracticeT__CropI__5441852A" Association="Self.FK__PracticeT__CropI__5441852A">
+    <AssociationSet Name="FK__PracticeT__CropI__1F98B2C1" Association="Self.FK__PracticeT__CropI__1F98B2C1">
       <End Role="Crops" EntitySet="Crops" />
       <End Role="PracticeTemplates" EntitySet="PracticeTemplates" />
     </AssociationSet>
@@ -252,15 +252,15 @@
       <End Role="UserRoles" EntitySet="UserRoles" />
       <End Role="Users" EntitySet="Users" />
     </AssociationSet>
-    <AssociationSet Name="FK__WorkPlans__Green__5AEE82B9" Association="Self.FK__WorkPlans__Green__5AEE82B9">
+    <AssociationSet Name="FK__WorkPlans__Green__2645B050" Association="Self.FK__WorkPlans__Green__2645B050">
       <End Role="Greenhouses" EntitySet="Greenhouses" />
       <End Role="WorkPlans" EntitySet="WorkPlans" />
     </AssociationSet>
-    <AssociationSet Name="FK__WorkTasks__Plant__5EBF139D" Association="Self.FK__WorkTasks__Plant__5EBF139D">
+    <AssociationSet Name="FK__WorkTasks__Plant__2A164134" Association="Self.FK__WorkTasks__Plant__2A164134">
       <End Role="PlantingZones" EntitySet="PlantingZones" />
       <End Role="WorkTasks" EntitySet="WorkTasks" />
     </AssociationSet>
-    <AssociationSet Name="FK__WorkTasks__WorkP__5DCAEF64" Association="Self.FK__WorkTasks__WorkP__5DCAEF64">
+    <AssociationSet Name="FK__WorkTasks__WorkP__29221CFB" Association="Self.FK__WorkTasks__WorkP__29221CFB">
       <End Role="WorkPlans" EntitySet="WorkPlans" />
       <End Role="WorkTasks" EntitySet="WorkTasks" />
     </AssociationSet>

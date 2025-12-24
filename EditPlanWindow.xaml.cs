@@ -15,19 +15,49 @@ using System.Windows.Shapes;
 namespace Greenhose
 {
     /// <summary>
-    /// Логика взаимодействия для AddPlanWindow.xaml
+    /// Логика взаимодействия для EditPlanWindow.xaml
     /// </summary>
-    public partial class AddPlanWindow : Window
+    public partial class EditPlanWindow : Window
     {
         private GreenhouseFacade _facade;
+        private int _planId;
 
-        public AddPlanWindow()
+        public EditPlanWindow(int planId)
         {
             InitializeComponent();
             _facade = new GreenhouseFacade();
+            _planId = planId;
+            LoadPlanData();
             LoadGreenhouses();
-            StartDatePicker.SelectedDate = DateTime.Today;
-            EndDatePicker.SelectedDate = DateTime.Today.AddDays(7);
+        }
+
+        private void LoadPlanData()
+        {
+            try
+            {
+                using (var context = new Greenhouse_AtenaEntities())
+                {
+                    var plan = context.WorkPlans.Find(_planId);
+                    if (plan != null)
+                    {
+                        StartDatePicker.SelectedDate = plan.StartDate;
+                        EndDatePicker.SelectedDate = plan.EndDate;
+
+                        foreach (ComboBoxItem item in StatusComboBox.Items)
+                        {
+                            if (item.Content.ToString() == plan.Status)
+                            {
+                                item.IsSelected = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки данных плана: {ex.Message}");
+            }
         }
 
         private void LoadGreenhouses()
@@ -38,6 +68,15 @@ namespace Greenhose
                 GreenhouseComboBox.ItemsSource = greenhouses;
                 GreenhouseComboBox.DisplayMemberPath = "Name";
                 GreenhouseComboBox.SelectedValuePath = "Id";
+
+                using (var context = new Greenhouse_AtenaEntities())
+                {
+                    var plan = context.WorkPlans.Find(_planId);
+                    if (plan != null)
+                    {
+                        GreenhouseComboBox.SelectedValue = plan.GreenhouseId;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -69,15 +108,15 @@ namespace Greenhose
             {
                 var plan = new WorkPlans
                 {
+                    Id = _planId,
                     GreenhouseId = (int)GreenhouseComboBox.SelectedValue,
                     StartDate = StartDatePicker.SelectedDate.Value,
                     EndDate = EndDatePicker.SelectedDate.Value,
                     Status = (StatusComboBox.SelectedItem as ComboBoxItem)?.Content.ToString()
                 };
 
-                _facade.AddWorkPlan(plan);
-
-                MessageBox.Show("План работ добавлен");
+                _facade.UpdateWorkPlan(plan);
+                MessageBox.Show("План работ обновлен");
                 this.DialogResult = true;
                 this.Close();
             }

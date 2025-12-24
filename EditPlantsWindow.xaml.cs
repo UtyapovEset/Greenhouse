@@ -12,39 +12,54 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-
 namespace Greenhose
 {
     /// <summary>
-    /// Логика взаимодействия для CreatePlantsWindow.xaml
+    /// Логика взаимодействия для EditPlantsWindow.xaml
     /// </summary>
-    public partial class CreatePlantsWindow : Window
+    public partial class EditPlantsWindow : Window
     {
-        private GreenhouseFacade _facade;
+        private Greenhouse_AtenaEntities _context;
+        private Crops _cropToEdit;
 
-        public CreatePlantsWindow()
+        public EditPlantsWindow(Crops crop)
         {
             InitializeComponent();
-            _facade = new GreenhouseFacade();
+            _context = new Greenhouse_AtenaEntities();
+            _cropToEdit = _context.Crops.Find(crop.Id);
             LoadSorts();
+            LoadCropData();
         }
 
         private void LoadSorts()
         {
             try
             {
-                using (var context = new Greenhouse_AtenaEntities())
-                {
-                    var sorts = context.Type_Crops.ToList();
-                    SortComboBox.ItemsSource = sorts;
-                    SortComboBox.DisplayMemberPath = "name_sort";
-                    SortComboBox.SelectedValuePath = "id";
-                }
+                var sorts = _context.Type_Crops.ToList();
+                SortComboBox.ItemsSource = sorts;
+                SortComboBox.DisplayMemberPath = "name_sort";
+                SortComboBox.SelectedValuePath = "id";
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка загрузки сортов: {ex.Message}");
             }
+        }
+
+        private void LoadCropData()
+        {
+            if (_cropToEdit == null)
+            {
+                MessageBox.Show("Ошибка загрузки данных культуры");
+                this.Close();
+                return;
+            }
+
+            NameTextBox.Text = _cropToEdit.Name;
+            SortComboBox.SelectedValue = _cropToEdit.Sort;
+            GrowthDaysTextBox.Text = _cropToEdit.GrowthDays.ToString();
+            TemperatureTextBox.Text = _cropToEdit.OptimalTemperature.ToString();
+            HumidityTextBox.Text = _cropToEdit.OptimalHumidity.ToString();
         }
 
         private void AddSortButton_Click(object sender, RoutedEventArgs e)
@@ -72,20 +87,17 @@ namespace Greenhose
                 {
                     try
                     {
-                        using (var context = new Greenhouse_AtenaEntities())
+                        var newSort = new Type_Crops
                         {
-                            var newSort = new Type_Crops
-                            {
-                                name_sort = textBox.Text
-                            };
+                            name_sort = textBox.Text
+                        };
 
-                            context.Type_Crops.Add(newSort);
-                            context.SaveChanges();
+                        _context.Type_Crops.Add(newSort);
+                        _context.SaveChanges();
 
-                            LoadSorts();
-                            MessageBox.Show("Сорт добавлен");
-                            newSortWindow.Close();
-                        }
+                        LoadSorts();
+                        MessageBox.Show("Сорт добавлен");
+                        newSortWindow.Close();
                     }
                     catch (Exception ex)
                     {
@@ -113,66 +125,73 @@ namespace Greenhose
         {
             if (string.IsNullOrWhiteSpace(NameTextBox.Text))
             {
-                MessageBox.Show("Введите название культуры");
+                MessageBox.Show("Введите название культуры", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                NameTextBox.Focus();
                 return;
             }
 
             if (SortComboBox.SelectedItem == null)
             {
-                MessageBox.Show("Выберите сорт");
+                MessageBox.Show("Выберите сорт", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                SortComboBox.Focus();
                 return;
             }
 
             if (!int.TryParse(GrowthDaysTextBox.Text, out int growthDays) || growthDays <= 0)
             {
-                MessageBox.Show("Введите корректное количество дней роста");
+                MessageBox.Show("Введите корректное количество дней роста (целое число больше 0)", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                GrowthDaysTextBox.Focus();
+                GrowthDaysTextBox.SelectAll();
                 return;
             }
 
             if (!int.TryParse(TemperatureTextBox.Text, out int temperature))
             {
-                MessageBox.Show("Введите корректную температуру");
+                MessageBox.Show("Введите корректную температуру (целое число)", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                TemperatureTextBox.Focus();
+                TemperatureTextBox.SelectAll();
                 return;
             }
 
             if (!decimal.TryParse(HumidityTextBox.Text, out decimal humidity) || humidity < 0 || humidity > 100)
             {
-                MessageBox.Show("Введите корректную влажность (0-100)");
+                MessageBox.Show("Введите корректную влажность (число от 0 до 100)", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                HumidityTextBox.Focus();
+                HumidityTextBox.SelectAll();
                 return;
             }
 
             try
             {
-                var newCrop = new Crops
-                {
-                    Name = NameTextBox.Text,
-                    Sort = (int)SortComboBox.SelectedValue,
-                    GrowthDays = growthDays,
-                    OptimalTemperature = temperature,
-                    OptimalHumidity = humidity
-                };
+                _cropToEdit.Name = NameTextBox.Text;
+                _cropToEdit.Sort = (int)SortComboBox.SelectedValue;
+                _cropToEdit.GrowthDays = growthDays;
+                _cropToEdit.OptimalTemperature = temperature;
+                _cropToEdit.OptimalHumidity = humidity;
 
-                _facade.AddCrop(newCrop);
+                _context.SaveChanges();
 
-                MessageBox.Show("Культура добавлена успешно");
+                MessageBox.Show("Культура обновлена успешно", "Успех",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
                 this.DialogResult = true;
                 this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка сохранения: {ex.Message}");
+                MessageBox.Show($"Ошибка сохранения: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            this.DialogResult = false;
             this.Close();
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            _facade?.Dispose();
-            base.OnClosed(e);
         }
     }
 }

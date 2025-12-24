@@ -31,7 +31,6 @@ C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CreatePlants
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CreatePlantsWindow.baml
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CreateGreenhouseWindow.g.cs
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\CreateGreenhouseWindow.baml
-C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Greenhose.exe.config
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\AddPlanWindow.g.cs
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\AddTaskWindow.g.cs
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\EditTaskWindow.g.cs
@@ -44,3 +43,10 @@ C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\AddUserWindo
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\AddUserWindow.baml
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\ReportsWindow.g.cs
 C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\ReportsWindow.baml
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\EditGreenhouseWindow.g.cs
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\EditGreenhouseWindow.baml
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\Greenhose.exe.config
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\EditPlanWindow.g.cs
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\EditPlanWindow.baml
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\EditPlantsWindow.g.cs
+C:\Users\Есет\Desktop\документы\C#\Greenhose\obj\Debug\EditPlantsWindow.baml

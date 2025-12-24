@@ -20,17 +20,18 @@ namespace Greenhose
     /// </summary>
     public partial class ReportsWindow : Window
     {
+        private GreenhouseFacade _facade;
         private string _currentUserRole;
 
         public ReportsWindow()
         {
             InitializeComponent();
+            _facade = new GreenhouseFacade();
         }
 
         public ReportsWindow(string userRole) : this()
         {
             _currentUserRole = userRole;
-            LoadReports();
         }
 
         private void LoadReports()
@@ -59,7 +60,6 @@ namespace Greenhose
 
                 try
                 {
-                    // --- КЛИМАТ ЗА СЕГОДНЯ ---
                     var climateRaw = context.ClimateData
                         .Include(c => c.Greenhouses)
                         .Where(c => c.Timestamp >= today && c.Timestamp < tomorrow)
@@ -70,27 +70,29 @@ namespace Greenhose
                         .Select(g => new
                         {
                             Greenhouse = g.First().Greenhouses?.Name ?? "Не указана",
-                            AvgTemp = g.Average(x => x.Temperature),
-                            AvgHumidity = g.Average(x => x.Humidity)
+                            AvgTemp = Math.Round(g.Average(x => x.Temperature), 1),
+                            AvgHumidity = Math.Round(g.Average(x => x.Humidity), 1)
                         })
                         .ToList();
 
                     DailyClimateList.ItemsSource = climateData;
 
-
-                    // --- ЗАДАЧИ ---
                     var todayTasks = context.WorkTasks
                         .Where(t => t.DueDate >= today && t.DueDate < tomorrow)
                         .ToList();
 
-                    var completed = todayTasks.Count(t => t.Status == "Выполнена");
-                    TasksCompletedText.Text = $"{completed} из {todayTasks.Count}";
+                    var completedToday = todayTasks.Count(t =>
+                        t.Status == "Выполнена");
 
+                    var activeToday = todayTasks.Count(t =>
+                        (t.Status == "Запланирована" || t.Status == "В работе") &&
+                        t.DueDate >= today);
 
-                    // --- ПРОБЛЕМНЫЕ ЗОНЫ ---
+                    TasksCompletedText.Text = $"{completedToday} выполнено, {activeToday} в работе";
+
                     var problemZones = context.PlantingZones
                         .Include(z => z.Greenhouses)
-                        .Where(z => z.Status == "Problem")
+                        .Where(z => z.Status == "Проблема" || z.Status == "На обслуживании")
                         .ToList()
                         .Select(z => new
                         {
@@ -102,8 +104,6 @@ namespace Greenhose
 
                     ProblemZonesList.ItemsSource = problemZones;
 
-
-                    // --- БЛИЖАЙШИЙ УРОЖАЙ ---
                     var harvestRaw = context.PlantingZones
                         .Include(z => z.Crops)
                         .Include(z => z.Greenhouses)
@@ -116,9 +116,10 @@ namespace Greenhose
                         {
                             Crop = z.Crops?.Name ?? "Не указана",
                             Zone = z.ZoneName ?? "Не указана",
-                            Date = z.ExpectedHarvestDate,
+                            Date = z.ExpectedHarvestDate?.ToString("dd.MM.yyyy") ?? "Не указана",
                             Greenhouse = z.Greenhouses?.Name ?? "Не указана"
                         })
+                        .OrderBy(x => x.Date)
                         .ToList();
 
                     UpcomingHarvestList.ItemsSource = upcoming;
@@ -146,7 +147,7 @@ namespace Greenhose
                     Forecast30DaysText.Text = forecast30Days.Count.ToString();
                     Forecast60DaysText.Text = forecast60Days.Count.ToString();
 
-                    YieldForecastList.ItemsSource = forecast7Days.Take(10);
+                    YieldForecastList.ItemsSource = forecast7Days;
                 }
                 catch (Exception ex)
                 {
@@ -166,18 +167,23 @@ namespace Greenhose
             var zones = context.PlantingZones
                 .Include(z => z.Crops)
                 .Include(z => z.Greenhouses)
-                .Where(z => z.ExpectedHarvestDate >= startDate &&
-                            z.ExpectedHarvestDate <= endDate)
+                .Where(z => z.ExpectedHarvestDate.HasValue &&
+                            z.ExpectedHarvestDate.Value >= startDate &&
+                            z.ExpectedHarvestDate.Value <= endDate)
                 .ToList();
+
+            var cropGrowthDays = context.Crops.ToDictionary(c => c.Id, c => c.GrowthDays);
 
             return zones
                 .Select(z => new
                 {
                     Crop = z.Crops?.Name ?? "Не указана",
                     Greenhouse = z.Greenhouses?.Name ?? "Не указана",
-                    HarvestDate = z.ExpectedHarvestDate,
-                    DaysLeft = (z.ExpectedHarvestDate.Value - startDate).Days
+                    HarvestDate = z.ExpectedHarvestDate?.ToString("dd.MM.yyyy") ?? "Не указана",
+                    DaysLeft = z.ExpectedHarvestDate.HasValue ? (z.ExpectedHarvestDate.Value - DateTime.Today).Days : 0,
+                    ZoneName = z.ZoneName ?? "Не указана"
                 })
+                .OrderBy(x => x.DaysLeft)
                 .ToList<dynamic>();
         }
 
@@ -187,25 +193,44 @@ namespace Greenhose
             {
                 try
                 {
-                    var crops = context.Crops.Include(c => c.PlantingZones).ToList();
+                    var crops = context.Crops
+                        .Include(c => c.PlantingZones)
+                        .Include(c => c.Type_Crops)
+                        .Where(c => c.PlantingZones.Any())
+                        .ToList();
 
-                    var good = crops.Count(c => c.PlantingZones.All(z => z.Status != "Problem"));
+                    if (!crops.Any())
+                    {
+                        GoodCropsText.Text = "0";
+                        AttentionCropsText.Text = "0";
+                        CriticalCropsText.Text = "0";
+                        CropStatusList.ItemsSource = new List<dynamic>();
+                        return;
+                    }
+
+                    var good = crops.Count(c =>
+                        !c.PlantingZones.Any(z => z.Status == "Проблема" || z.Status == "На обслуживании"));
+
                     var attention = crops.Count(c =>
-                        c.PlantingZones.Any(z => z.Status == "Problem") &&
-                        c.PlantingZones.Count(z => z.Status == "Problem") <= c.PlantingZones.Count * 0.5);
+                        c.PlantingZones.Any(z => z.Status == "Проблема" || z.Status == "На обслуживании") &&
+                        c.PlantingZones.Count(z => z.Status == "Проблема" || z.Status == "На обслуживании") <=
+                        c.PlantingZones.Count * 0.5);
+
                     var critical = crops.Count(c =>
-                        c.PlantingZones.Count(z => z.Status == "Problem") > c.PlantingZones.Count * 0.5);
+                        c.PlantingZones.Count(z => z.Status == "Проблема" || z.Status == "На обслуживании") >
+                        c.PlantingZones.Count * 0.5);
 
                     GoodCropsText.Text = good.ToString();
                     AttentionCropsText.Text = attention.ToString();
                     CriticalCropsText.Text = critical.ToString();
 
                     CropStatusList.ItemsSource = crops
-                        .Where(c => c.PlantingZones.Any(z => z.Status == "Problem"))
+                        .Where(c => c.PlantingZones.Any(z => z.Status == "Проблема" || z.Status == "На обслуживании"))
                         .Select(c => new
                         {
                             Name = c.Name,
-                            ProblemZones = c.PlantingZones.Count(z => z.Status == "Problem"),
+                            Sort = c.Type_Crops?.name_sort ?? "Не указан",
+                            ProblemZones = c.PlantingZones.Count(z => z.Status == "Проблема" || z.Status == "На обслуживании"),
                             TotalZones = c.PlantingZones.Count
                         })
                         .Take(10)
@@ -220,32 +245,23 @@ namespace Greenhose
 
         private void LoadOverdueTasks()
         {
-            using (var context = new Greenhouse_AtenaEntities())
+            try
             {
-                try
-                {
-                    var now = DateTime.Now;
+                var overdue = _facade.GetOverdueTasks();
 
-                    var tasks = context.WorkTasks
-                        .Where(t => t.DueDate < now && t.Status != "Выполнена" && t.Status != "Отменена")
-                        .ToList()
-                        .Select(t => new
-                        {
-                            Task = t.Description,
-                            DueDate = t.DueDate,
-                            Status = t.Status,
-                            AssignedTo = t.AssignedTo ?? "Не назначен",
-                            Greenhouse = "Общая"
-                        })
-                        .ToList();
-
-                    OverdueTasksCountText.Text = tasks.Count.ToString();
-                    OverdueTasksList.ItemsSource = tasks.Take(10);
-                }
-                catch (Exception ex)
+                OverdueTasksCountText.Text = overdue.Count.ToString();
+                OverdueTasksList.ItemsSource = overdue.Select(t => new
                 {
-                    MessageBox.Show($"Ошибка загрузки просроченных задач: {ex.Message}");
-                }
+                    Task = t.Description ?? "Без описания",
+                    DueDate = t.DueDate.ToString("dd.MM.yyyy HH:mm"),
+                    Status = t.Status ?? "Не указан",
+                    AssignedTo = t.AssignedTo ?? "Не назначен",
+                    Greenhouse = t.WorkPlans?.Greenhouses?.Name ?? "Общая"
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки просроченных задач: {ex.Message}");
             }
         }
 
@@ -259,15 +275,27 @@ namespace Greenhose
                     var endDate = PeriodEndDatePicker.SelectedDate ?? DateTime.Today;
 
                     var tasks = context.WorkTasks
+                        .Include(t => t.WorkPlans)
+                        .Include(t => t.WorkPlans.Greenhouses)
                         .Where(t => t.DueDate >= startDate && t.DueDate <= endDate)
                         .ToList();
 
-                    var completed = tasks.Count(t => t.Status == "Выполнена");
-                    var notCompleted = tasks.Count(t => t.Status != "Выполнена" && t.Status != "Отменена");
+                    var today = DateTime.Today;
+
+                    var completed = tasks.Count(t =>
+                        t.Status == "Выполнена");
+
+                    var active = tasks.Count(t =>
+                        (t.Status == "Запланирована" || t.Status == "В работе") &&
+                        t.DueDate >= today);
+
+                    var overdue = tasks.Count(t =>
+                        (t.Status == "Запланирована" || t.Status == "В работе") &&
+                        t.DueDate < today);
 
                     TotalTasksText.Text = tasks.Count.ToString();
                     CompletedTasksText.Text = completed.ToString();
-                    NotCompletedTasksText.Text = notCompleted.ToString();
+                    NotCompletedTasksText.Text = (active + overdue).ToString();
 
                     TaskCompletionList.ItemsSource = tasks
                         .OrderByDescending(t => t.DueDate)
@@ -275,9 +303,10 @@ namespace Greenhose
                         .Select(t => new
                         {
                             Date = t.DueDate.ToString("dd.MM.yyyy HH:mm"),
-                            Description = t.Description,
+                            Description = t.Description ?? "Без описания",
                             Status = t.Status ?? "Не указан",
-                            AssignedTo = t.AssignedTo ?? "Не назначен"
+                            AssignedTo = t.AssignedTo ?? "Не назначен",
+                            Greenhouse = t.WorkPlans?.Greenhouses?.Name ?? "Общая"
                         })
                         .ToList();
                 }
@@ -311,6 +340,13 @@ namespace Greenhose
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(_currentUserRole))
+            {
+                MessageBox.Show("Ошибка: роль пользователя не определена", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             MainWindow mainWindow = new MainWindow(_currentUserRole);
             mainWindow.Show();
             this.Close();
@@ -325,6 +361,41 @@ namespace Greenhose
                 PeriodEndDatePicker.SelectedDate = DateTime.Today;
 
             LoadReports();
+        }
+
+        private void UpdateHarvestDatesButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                using (var context = new Greenhouse_AtenaEntities())
+                {
+                    var cropsWithZones = context.Crops
+                        .Include(c => c.PlantingZones)
+                        .ToList();
+
+                    foreach (var crop in cropsWithZones)
+                    {
+                        foreach (var zone in crop.PlantingZones)
+                        {
+                            zone.ExpectedHarvestDate = DateTime.Today.AddDays(crop.GrowthDays);
+                            _facade.UpdatePlantingZone(zone);
+                        }
+                    }
+
+                    MessageBox.Show("Даты сбора урожая обновлены!");
+                    LoadReports();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка обновления дат: {ex.Message}");
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _facade?.Dispose();
+            base.OnClosed(e);
         }
     }
 }
